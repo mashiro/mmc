@@ -3,4 +3,9 @@ project(mmc)
 
 find_package(Boost)
 
+include_directories(src)
 add_subdirectory(src)
+
+add_executable(mmc main.cpp)
+target_link_libraries(mmc mmc2)
+target_link_libraries(mmc boost_program_options)
