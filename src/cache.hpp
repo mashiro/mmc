@@ -1,9 +1,12 @@
-#ifndef CACHE_HPP_INCLUDED
-#define CACHE_HPP_INCLUDED
+#ifndef MMC_CACHE_HPP_INCLUDED
+#define MMC_CACHE_HPP_INCLUDED
+
+#include <boost/noncopyable.hpp>
 
 namespace mmc {
 
 class Cache
+	: private boost::noncopyable
 {
 public:
 	Cache();
@@ -11,4 +14,4 @@ public:
 
 } // namespace mmc
 
-#endif /* CACHE_HPP_INCLUDED */
+#endif /* MMC_CACHE_HPP_INCLUDED */

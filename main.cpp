@@ -12,9 +12,9 @@ int main(int argc, char* argv[])
 		namespace po = boost::program_options;
 		po::options_description desc("allowed options");
 		desc.add_options()
-			("help,h", "produce help message")
-			("address,a", po::value<std::string>()->default_value("127.0.0.1"), "address")
-			("port,p", po::value<boost::uint16_t>()->default_value(22122), "port")
+			("help,h", "print this help and exit")
+			("address,l", po::value<std::string>()->default_value("0.0.0.0"), "interface to listen on")
+			("port,p", po::value<boost::uint16_t>()->default_value(22122), "TCP port number to listen on")
 			("threads,t", po::value<boost::uint32_t>()->default_value(1), "num threads")
 			;
 
