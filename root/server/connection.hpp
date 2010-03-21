@@ -18,12 +18,12 @@ public:
 	typedef AsioBase base;
 	typedef base::io_service_type io_service_type;
 	typedef base::strand_type strand_type;
+	typedef base::streambuf_type streambuf_type;
 	typedef base::protocol_type protocol_type;
 	typedef base::socket_type socket_type;
 	typedef base::acceptor_type acceptor_type;
 	typedef base::endpoint_type endpoint_type;
 	typedef base::resolver_type resolver_type;
-	typedef boost::array<char, 1024 * 8> buffer_type;
 
 public:
 	explicit Connection(io_service_type& io_service);
@@ -31,21 +31,40 @@ public:
 	socket_type& socket();
 	const socket_type& socket() const;
 
-	buffer_type& buffer();
-	const buffer_type& buffer() const;
+	streambuf_type& streambuf();
+	const streambuf_type& streambuf() const;
+
+	std::string& buffer();
+	const std::string& buffer() const;
 
 	void start();
 
-	template <typename Buffer, typename Handler>
-	void async_read_some(Buffer buffer, Handler handler)
+	template <typename Container>
+	void read_streambuf(Container& container)
 	{
-		socket_.async_read_some(buffer, strand_.wrap(handler));
+		container.clear();
+		std::istream is(&streambuf_);
+		std::copy(std::istreambuf_iterator<char>(is), std::istreambuf_iterator<char>(), std::back_inserter(container));
 	}
 
-	template <typename Buffer, typename Handler>
-	void async_write(Buffer buffer, Handler handler)
+	// read
+	template <typename ReadHandler>
+	void async_read(ReadHandler handler)
 	{
-		boost::asio::async_write(socket_, buffer, strand_.wrap(handler));
+		boost::asio::async_read_until(socket_, streambuf_, "\r\n", strand_.wrap(handler));
+	}
+
+	template <typename Allocator, typename ReadHandler>
+	void async_read(boost::asio::basic_streambuf<Allocator>& buffer, ReadHandler handler)
+	{
+		boost::asio::async_read_until(socket_, buffer, "\r\n", strand_.wrap(handler));
+	}
+
+	// write
+	template <typename ConstBufferSequence, typename WriteHandler>
+	void async_write(const ConstBufferSequence& buffers, WriteHandler handler)
+	{
+		boost::asio::async_write(socket_, buffers, strand_.wrap(handler));
 	}
 
 private:
@@ -55,7 +74,8 @@ private:
 private:
 	strand_type strand_;
 	socket_type socket_;
-	buffer_type buffer_;
+	streambuf_type streambuf_;
+	std::string buffer_;
 };
 
 } // namespace mmc

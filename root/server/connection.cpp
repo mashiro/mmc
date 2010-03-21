@@ -20,31 +20,41 @@ const Connection::socket_type& Connection::socket() const
 	return socket_;
 }
 
-Connection::buffer_type& Connection::buffer()
+Connection::streambuf_type& Connection::streambuf()
+{
+	return streambuf_;
+}
+
+const Connection::streambuf_type& Connection::streambuf() const
+{
+	return streambuf_;
+}
+
+std::string& Connection::buffer()
 {
 	return buffer_;
 }
 
-const Connection::buffer_type& Connection::buffer() const
+const std::string& Connection::buffer() const
 {
 	return buffer_;
 }
 
 void Connection::start()
 {
-	async_read_some(boost::asio::buffer(buffer_),
-		boost::bind(&Connection::handle_read, shared_from_this(),
-			boost::asio::placeholders::error,
-			boost::asio::placeholders::bytes_transferred));
+	async_read(boost::bind(&Connection::handle_read, shared_from_this(),
+		boost::asio::placeholders::error,
+		boost::asio::placeholders::bytes_transferred));
 }
 
 void Connection::handle_read(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	if (!error)
 	{
-		CommandPtr command = Command::parse(std::string(buffer_.begin(), buffer_.begin() + bytes_transferred));
+		read_streambuf(buffer_);
+		CommandPtr command = Command::parse(buffer_);
 
-		async_write(boost::asio::buffer(buffer_, bytes_transferred),
+		async_write(boost::asio::buffer(buffer_),
 			boost::bind(&Connection::handle_write, shared_from_this(),
 				boost::asio::placeholders::error));
 	}
