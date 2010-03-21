@@ -12,6 +12,7 @@ class SetCommand
 	, public boost::enable_shared_from_this<SetCommand>
 {
 public:
+	SetCommand(const std::string& name);
 	virtual void execute(ConnectionPtr connection);
 };
 

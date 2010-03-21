@@ -25,6 +25,8 @@ MMC_FWD_DECL_CLASS(Connection)
 class Command : private boost::noncopyable
 {
 public:
+	Command(const std::string& name);
+
 	static CommandPtr parse(const std::string& command);
 
 	virtual bool parse(const std::vector<std::string>& args) = 0;

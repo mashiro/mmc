@@ -3,6 +3,10 @@
 
 namespace mmc {
 
+SetCommand::SetCommand(const std::string& name)
+	: StorageCommand(name)
+{}
+
 void SetCommand::execute(ConnectionPtr connection)
 {
 }

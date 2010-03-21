@@ -57,6 +57,7 @@ void Connection::handle_read(const boost::system::error_code& error, std::size_t
 		if (command)
 		{
 			buffer_ = command->get_name();
+			buffer_ += "\r\n";
 		}
 
 		async_write(boost::asio::buffer(buffer_),

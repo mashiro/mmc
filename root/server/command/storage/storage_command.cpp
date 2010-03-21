@@ -5,12 +5,16 @@
 
 namespace mmc {
 
+StorageCommand::StorageCommand(const std::string& name)
+	: Command(name)
+{}
+
 CommandPtr StorageCommand::parse(const std::string& name, const std::vector<std::string>& args)
 {
 	StorageCommandPtr cmd;
 
 	if (name == "set")
-		cmd = SetCommandPtr(new SetCommand());
+		cmd = SetCommandPtr(new SetCommand(name));
 
 	/*
 	if (name == "set")

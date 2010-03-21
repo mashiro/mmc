@@ -4,6 +4,10 @@
 
 namespace mmc {
 
+Command::Command(const std::string& name)
+	: name_(name)
+{}
+
 CommandPtr Command::parse(const std::string& command)
 {
 	CommandPtr cmd;
@@ -13,7 +17,7 @@ CommandPtr Command::parse(const std::string& command)
 
 	typedef boost::char_separator<char> separator_t;
 	typedef boost::tokenizer<separator_t> tokenizer_t;
-	separator_t separator(" ");
+	separator_t separator(" \r\n");
 	tokenizer_t tokenizer(command, separator);
 
 	bool first = true;

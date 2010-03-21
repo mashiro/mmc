@@ -18,6 +18,8 @@ MMC_FWD_DECL_CLASS(CasCommand)
 class StorageCommand : public Command
 {
 public:
+	StorageCommand(const std::string& name);
+
 	static CommandPtr parse(const std::string& name, const std::vector<std::string>& args);
 	virtual bool parse(const std::vector<std::string>& args);
 
