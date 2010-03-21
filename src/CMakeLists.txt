@@ -1,4 +1,7 @@
-file(GLOB MMC_SOURCES *.cpp command/*.cpp)
-add_library(mmc2 STATIC ${MMC_SOURCES})
-target_link_libraries(mmc2 boost_system)
-target_link_libraries(mmc2 boost_thread-mt)
+add_subdirectory(command)
+
+file(GLOB MMC_SOURCES *.cpp)
+add_library(mmc_server STATIC ${MMC_SOURCES})
+target_link_libraries(mmc_server mmc_command)
+target_link_libraries(mmc_server boost_system)
+target_link_libraries(mmc_server boost_thread-mt)
