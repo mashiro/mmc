@@ -1,6 +1,10 @@
 #ifndef MMC_ASIOBASE_HPP_INCLUDED
 #define MMC_ASIOBASE_HPP_INCLUDED
 
+#if defined(_MSC_VER)
+	#pragma warning(disable: 4503)
+#endif // _MSC_VER
+
 #include <boost/asio.hpp>
 
 namespace mmc {
