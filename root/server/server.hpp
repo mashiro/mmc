@@ -2,7 +2,7 @@
 #define MMC_SERVER_HPP_INCLUDED
 
 #include "asio_base.hpp"
-#include "fwd_decl.hpp"
+#include "utility.hpp"
 #include <boost/noncopyable.hpp>
 #include <string>
 
