@@ -29,6 +29,8 @@ CommandPtr StorageCommand::parse(const std::string& name)
 
 bool StorageCommand::parse(const std::vector<std::string>& args)
 {
+	static const char* noreply = "noreply";
+
 	try
 	{
 		if (get_type() == StorageType::cas)
@@ -40,8 +42,8 @@ bool StorageCommand::parse(const std::vector<std::string>& args)
 			set_flags(lexical(args[1]));
 			set_exptime(lexical(args[2]));
 			set_bytes(lexical(args[3]));
-			set_bytes(lexical(args[3]));
-			set_noreply(args.size() > 4 && args[4] == "noreply");
+			set_cas(lexical(args[4]));
+			set_noreply(args.size() > 5 && args[5] == noreply);
 		}
 		else
 		{
@@ -52,13 +54,11 @@ bool StorageCommand::parse(const std::vector<std::string>& args)
 			set_flags(lexical(args[1]));
 			set_exptime(lexical(args[2]));
 			set_bytes(lexical(args[3]));
-			set_cas(lexical(args[4]));
-			set_noreply(args.size() > 5 && args[5] == "noreply");
+			set_noreply(args.size() > 4 && args[4] == noreply);
 		}
 	}
 	catch (std::bad_cast&)
 	{
-		// パース失敗
 		return false;
 	}
 
