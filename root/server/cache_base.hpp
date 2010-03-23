@@ -7,6 +7,14 @@
 
 namespace mmc {
 
+MMC_ENUM_BEGIN(ResultCode)
+	stored,
+	not_stored,
+	exists,
+	not_found,
+	deleted,
+MMC_ENUM_END()
+
 class CacheData
 {
 public:

@@ -1,5 +1,6 @@
 #include "command/command.hpp"
 #include "command/storage_command.hpp"
+#include "command/other_command.hpp"
 #include <boost/tokenizer.hpp>
 
 namespace mmc {
@@ -41,7 +42,7 @@ CommandPtr Command::parse(const std::string& command)
 
 	// parse
 	if      (!cmd) cmd = StorageCommand::parse(name);
-	else if (!cmd) cmd = StorageCommand::parse(name);
+	else if (!cmd) cmd = OtherCommand::parse(name);
 	else if (!cmd) cmd = StorageCommand::parse(name);
 	else if (!cmd) cmd = StorageCommand::parse(name);
 

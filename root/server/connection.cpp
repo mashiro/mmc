@@ -83,6 +83,8 @@ void Connection::handle_read(const boost::system::error_code& error, std::size_t
 		}
 		else
 		{
+			// error
+			buffer_ = constant::error;
 			buffer_ += constant::crlf;
 			async_write(boost::asio::buffer(buffer_),
 				boost::bind(&Connection::handle_write, shared_from_this(),
@@ -95,7 +97,8 @@ void Connection::handle_write(const boost::system::error_code& error)
 {
 	if (!error)
 	{
-		shutdown();
+		// restart
+		start();
 	}
 }
 

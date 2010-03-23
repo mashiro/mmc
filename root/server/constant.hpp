@@ -15,6 +15,21 @@ namespace mmc { namespace constant {
 	const char* const prepend = "prepend";
 	const char* const cas = "cas";
 
+	// other
+	const char* const version = "version";
+	const char* const quit = "quit";
+
+	// result
+	const char* const error = "ERROR";
+	const char* const client_error = "CLIENT_ERROR";
+	const char* const server_error = "SERVER_ERROR";
+	const char* const stored = "STORED";
+	const char* const not_stored = "NOT_STORED";
+	const char* const exists = "EXISTS";
+	const char* const not_found = "NOT_FOUND";
+	const char* const end = "END";
+
+
 }} // namespace mmc::constant
 
 #endif /* MMC_CONSTANT_HPP_INCLUDED */

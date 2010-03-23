@@ -12,8 +12,12 @@
 namespace mmc {
 
 MMC_ENUM_BEGIN(CommandType)
+	// none
 	none, 
+	// storage
 	set, add, replace, append, prepend, cas,
+	// other
+	version, quit,
 MMC_ENUM_END()
 
 MMC_FWD_DECL_CLASS(Command)
