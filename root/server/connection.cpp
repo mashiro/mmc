@@ -52,12 +52,15 @@ void Connection::handle_read(const boost::system::error_code& error, std::size_t
 	if (!error)
 	{
 		read_streambuf(buffer_);
+
 		CommandPtr command = Command::parse(buffer_);
+		if (command)
+			command->execute(shared_from_this());
 
 		if (command)
 		{
 			buffer_ = command->get_name();
-			buffer_ += "\r\n";
+			buffer_ += constant::crlf;
 		}
 
 		async_write(boost::asio::buffer(buffer_),

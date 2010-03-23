@@ -2,6 +2,7 @@
 #define MMC_CONNECTION_HPP_INCLUDED
 
 #include "asio_base.hpp"
+#include "constant.hpp"
 #include <boost/array.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
@@ -51,13 +52,13 @@ public:
 	template <typename ReadHandler>
 	void async_read(ReadHandler handler)
 	{
-		boost::asio::async_read_until(socket_, streambuf_, "\r\n", strand_.wrap(handler));
+		boost::asio::async_read_until(socket_, streambuf_, constant::crlf, strand_.wrap(handler));
 	}
 
 	template <typename Allocator, typename ReadHandler>
 	void async_read(boost::asio::basic_streambuf<Allocator>& buffer, ReadHandler handler)
 	{
-		boost::asio::async_read_until(socket_, buffer, "\r\n", strand_.wrap(handler));
+		boost::asio::async_read_until(socket_, buffer, constant::crlf, strand_.wrap(handler));
 	}
 
 	// write

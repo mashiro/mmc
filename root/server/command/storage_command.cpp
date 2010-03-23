@@ -1,31 +1,30 @@
 #include "command/storage_command.hpp"
 #include "connection.hpp"
 #include "lexical.hpp"
-#include <boost/utility/value_init.hpp>
+#include "constant.hpp"
 
 namespace mmc {
 
 StorageCommand::StorageCommand(const std::string& name, StorageType::type type) 
 	: Command(name)
-{
-	set_type(type);
-	set_key(boost::initialized_value);
-	set_flags(boost::initialized_value);
-	set_exptime(boost::initialized_value);
-	set_bytes(boost::initialized_value);
-	set_cas(boost::initialized_value);
-	set_noreply(boost::initialized_value);
-}
+	, MMC_PROPERTY_NAME(type)(type)
+	, MMC_PROPERTY_NAME(key)()
+	, MMC_PROPERTY_NAME(flags)(0)
+	, MMC_PROPERTY_NAME(exptime)(0)
+	, MMC_PROPERTY_NAME(bytes)(0)
+	, MMC_PROPERTY_NAME(cas)(0)
+	, MMC_PROPERTY_NAME(noreply)(false)
+{}
 
 CommandPtr StorageCommand::parse(const std::string& name)
 {
 	StorageType::type type = StorageType::none;
-	if      (name == "set")     type = StorageType::set;
-	else if (name == "add")     type = StorageType::add;
-	else if (name == "replace") type = StorageType::replace;
-	else if (name == "append")  type = StorageType::append;
-	else if (name == "prepned") type = StorageType::prepend;
-	else if (name == "cas")     type = StorageType::cas;
+	if      (name == constant::set)     type = StorageType::set;
+	else if (name == constant::add)     type = StorageType::add;
+	else if (name == constant::replace) type = StorageType::replace;
+	else if (name == constant::append)  type = StorageType::append;
+	else if (name == constant::prepend) type = StorageType::prepend;
+	else if (name == constant::cas)     type = StorageType::cas;
 
 	StorageCommandPtr command;
 	if (type != StorageType::none)
@@ -36,8 +35,6 @@ CommandPtr StorageCommand::parse(const std::string& name)
 
 bool StorageCommand::parse(const std::vector<std::string>& args)
 {
-	static const char* noreply = "noreply";
-
 	try
 	{
 		if (get_type() == StorageType::cas)
@@ -50,7 +47,7 @@ bool StorageCommand::parse(const std::vector<std::string>& args)
 			set_exptime(lexical(args[2]));
 			set_bytes(lexical(args[3]));
 			set_cas(lexical(args[4]));
-			set_noreply(args.size() > 5 && args[5] == noreply);
+			set_noreply(args.size() > 5 && args[5] == constant::noreply);
 		}
 		else
 		{
@@ -61,7 +58,7 @@ bool StorageCommand::parse(const std::vector<std::string>& args)
 			set_flags(lexical(args[1]));
 			set_exptime(lexical(args[2]));
 			set_bytes(lexical(args[3]));
-			set_noreply(args.size() > 4 && args[4] == noreply);
+			set_noreply(args.size() > 4 && args[4] == constant::noreply);
 		}
 	}
 	catch (std::bad_cast&)
@@ -70,6 +67,10 @@ bool StorageCommand::parse(const std::vector<std::string>& args)
 	}
 
 	return true;
+}
+
+void StorageCommand::execute(ConnectionPtr connection)
+{
 }
 
 } // namespace mmc

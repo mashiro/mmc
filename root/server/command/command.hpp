@@ -24,6 +24,7 @@ public:
 
 	static CommandPtr parse(const std::string& command);
 	virtual bool parse(const arguments_type& args) = 0;
+	virtual void execute(ConnectionPtr connection) = 0;
 
 public:
 	MMC_PROPERTY_DEF(std::string, name)

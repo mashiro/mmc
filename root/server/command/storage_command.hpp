@@ -25,6 +25,7 @@ public:
 
 	static CommandPtr parse(const std::string& name);
 	virtual bool parse(const arguments_type& args);
+	virtual void execute(ConnectionPtr connection);
 
 public:
 	MMC_PROPERTY_DEF(StorageType::type, type)
