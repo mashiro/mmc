@@ -5,6 +5,12 @@
 
 namespace mmc {
 
+class CacheBase
+	: private boost::noncopyable
+{
+public:
+};
+
 class Cache
 	: private boost::noncopyable
 {

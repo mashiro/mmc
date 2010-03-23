@@ -4,8 +4,9 @@
 
 namespace mmc {
 
-Command::Command(const std::string& name)
-	: name_(name)
+Command::Command(const std::string& name, CommandType::type type)
+	: MMC_PROPERTY_NAME(name)(name)
+	, MMC_PROPERTY_NAME(type)(type)
 {}
 
 CommandPtr Command::parse(const std::string& command)

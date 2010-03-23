@@ -11,6 +11,11 @@
 
 namespace mmc {
 
+MMC_ENUM_BEGIN(CommandType)
+	none, 
+	set, add, replace, append, prepend, cas,
+MMC_ENUM_END()
+
 MMC_FWD_DECL_CLASS(Command)
 MMC_FWD_DECL_CLASS(Connection)
 
@@ -20,7 +25,7 @@ public:
 	typedef std::vector<std::string> arguments_type;
 
 public:
-	Command(const std::string& name);
+	Command(const std::string& name, CommandType::type type);
 
 	static CommandPtr parse(const std::string& command);
 	virtual bool parse(const arguments_type& args) = 0;
@@ -28,6 +33,7 @@ public:
 
 public:
 	MMC_PROPERTY_DEF(std::string, name)
+	MMC_PROPERTY_DEF(CommandType::type, type)
 };
 
 } // namespace mmc

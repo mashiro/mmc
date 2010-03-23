@@ -6,9 +6,8 @@
 
 namespace mmc {
 
-StorageCommand::StorageCommand(const std::string& name, StorageType::type type) 
-	: Command(name)
-	, MMC_PROPERTY_NAME(type)(type)
+StorageCommand::StorageCommand(const std::string& name, CommandType::type type) 
+	: Command(name, type)
 	, MMC_PROPERTY_NAME(key)()
 	, MMC_PROPERTY_NAME(flags)(0)
 	, MMC_PROPERTY_NAME(exptime)(0)
@@ -19,16 +18,16 @@ StorageCommand::StorageCommand(const std::string& name, StorageType::type type)
 
 CommandPtr StorageCommand::parse(const std::string& name)
 {
-	StorageType::type type = StorageType::none;
-	if      (name == constant::set)     type = StorageType::set;
-	else if (name == constant::add)     type = StorageType::add;
-	else if (name == constant::replace) type = StorageType::replace;
-	else if (name == constant::append)  type = StorageType::append;
-	else if (name == constant::prepend) type = StorageType::prepend;
-	else if (name == constant::cas)     type = StorageType::cas;
+	CommandType::type type = CommandType::none;
+	if      (name == constant::set)     type = CommandType::set;
+	else if (name == constant::add)     type = CommandType::add;
+	else if (name == constant::replace) type = CommandType::replace;
+	else if (name == constant::append)  type = CommandType::append;
+	else if (name == constant::prepend) type = CommandType::prepend;
+	else if (name == constant::cas)     type = CommandType::cas;
 
 	StorageCommandPtr command;
-	if (type != StorageType::none)
+	if (type != CommandType::none)
 		command.reset(new StorageCommand(name, type));
 
 	return command;
@@ -38,7 +37,7 @@ bool StorageCommand::parse(const arguments_type& args)
 {
 	try
 	{
-		if (get_type() == StorageType::cas)
+		if (get_type() == CommandType::cas)
 		{
 			if (args.size() < 5)
 				return false;
