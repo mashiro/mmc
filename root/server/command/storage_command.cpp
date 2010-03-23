@@ -1,6 +1,7 @@
 #include "command/storage_command.hpp"
 #include "connection.hpp"
 #include "lexical.hpp"
+#include <boost/utility/value_init.hpp>
 
 namespace mmc {
 
@@ -8,6 +9,12 @@ StorageCommand::StorageCommand(const std::string& name, StorageType::type type)
 	: Command(name)
 {
 	set_type(type);
+	set_key(boost::initialized_value);
+	set_flags(boost::initialized_value);
+	set_exptime(boost::initialized_value);
+	set_bytes(boost::initialized_value);
+	set_cas(boost::initialized_value);
+	set_noreply(boost::initialized_value);
 }
 
 CommandPtr StorageCommand::parse(const std::string& name)
