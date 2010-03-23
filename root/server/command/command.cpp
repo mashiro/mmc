@@ -17,7 +17,7 @@ CommandPtr Command::parse(const std::string& command)
 
 	typedef boost::char_separator<char> separator_t;
 	typedef boost::tokenizer<separator_t> tokenizer_t;
-	separator_t separator(" \r\n");
+	separator_t separator(" ");
 	tokenizer_t tokenizer(command, separator);
 
 	bool first = true;

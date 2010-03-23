@@ -16,7 +16,6 @@ Server::Server(const std::string& address, const std::string& port, std::size_t 
 	acceptor_.set_option(acceptor_type::reuse_address(true));
 	acceptor_.bind(endpoint);
 	acceptor_.listen();
-
 	async_accept();
 }
 

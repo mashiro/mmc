@@ -2,6 +2,7 @@
 #include "command/command.hpp"
 #include <boost/bind.hpp>
 #include <vector>
+#include <algorithm>
 
 namespace mmc {
 
@@ -47,25 +48,44 @@ void Connection::start()
 		boost::asio::placeholders::bytes_transferred));
 }
 
+void Connection::shutdown()
+{
+	boost::system::error_code ignored_ec;
+	socket_.shutdown(socket_type::shutdown_both, ignored_ec);
+}
+
+void Connection::read_streambuf(std::size_t bytes_transferred)
+{
+	const char* data = boost::asio::buffer_cast<const char*>(streambuf_.data());
+	streambuf_.consume(bytes_transferred);
+	buffer_.assign(data, data + bytes_transferred - 2);
+}
+
+void Connection::async_write_result()
+{
+	async_write(boost::asio::buffer(buffer_),
+		boost::bind(&Connection::handle_write, shared_from_this(),
+			boost::asio::placeholders::error));
+}
+
 void Connection::handle_read(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	if (!error)
 	{
-		read_streambuf(buffer_);
+		read_streambuf(bytes_transferred);
 
 		CommandPtr command = Command::parse(buffer_);
 		if (command)
-			command->execute(shared_from_this());
-
-		if (command)
 		{
-			buffer_ = command->get_name();
-			buffer_ += constant::crlf;
+			command->execute(shared_from_this());
 		}
-
-		async_write(boost::asio::buffer(buffer_),
-			boost::bind(&Connection::handle_write, shared_from_this(),
-				boost::asio::placeholders::error));
+		else
+		{
+			buffer_ += constant::crlf;
+			async_write(boost::asio::buffer(buffer_),
+				boost::bind(&Connection::handle_write, shared_from_this(),
+					boost::asio::placeholders::error));
+		}
 	}
 }
 
@@ -73,8 +93,7 @@ void Connection::handle_write(const boost::system::error_code& error)
 {
 	if (!error)
 	{
-		boost::system::error_code ignored_ec;
-		socket_.shutdown(socket_type::shutdown_both, ignored_ec);
+		shutdown();
 	}
 }
 

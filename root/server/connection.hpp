@@ -3,7 +3,6 @@
 
 #include "asio_base.hpp"
 #include "constant.hpp"
-#include <boost/array.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -39,14 +38,7 @@ public:
 	const std::string& buffer() const;
 
 	void start();
-
-	template <typename Container>
-	void read_streambuf(Container& container)
-	{
-		container.clear();
-		std::istream is(&streambuf_);
-		std::copy(std::istreambuf_iterator<char>(is), std::istreambuf_iterator<char>(), std::back_inserter(container));
-	}
+	void shutdown();
 
 	// read
 	template <typename ReadHandler>
@@ -61,12 +53,18 @@ public:
 		boost::asio::async_read_until(socket_, buffer, constant::crlf, strand_.wrap(handler));
 	}
 
+	// streambuf から buffer にデータを読み込む
+	void read_streambuf(std::size_t bytes_transferred);
+
 	// write
 	template <typename ConstBufferSequence, typename WriteHandler>
 	void async_write(const ConstBufferSequence& buffers, WriteHandler handler)
 	{
 		boost::asio::async_write(socket_, buffers, strand_.wrap(handler));
 	}
+
+	// buffer のデータを書き込みコネクションを閉じる
+	void async_write_result();
 
 private:
 	void handle_read(const boost::system::error_code& error, std::size_t bytes_transferred);

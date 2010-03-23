@@ -2,6 +2,7 @@
 #include "connection.hpp"
 #include "lexical.hpp"
 #include "constant.hpp"
+#include <boost/bind.hpp>
 
 namespace mmc {
 
@@ -33,7 +34,7 @@ CommandPtr StorageCommand::parse(const std::string& name)
 	return command;
 }
 
-bool StorageCommand::parse(const std::vector<std::string>& args)
+bool StorageCommand::parse(const arguments_type& args)
 {
 	try
 	{
@@ -71,6 +72,23 @@ bool StorageCommand::parse(const std::vector<std::string>& args)
 
 void StorageCommand::execute(ConnectionPtr connection)
 {
+	connection->async_read(
+		boost::bind(&StorageCommand::handle_datablock_read, shared_from_this(),
+			connection,
+			boost::asio::placeholders::error,
+			boost::asio::placeholders::bytes_transferred));
+}
+
+void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost::system::error_code& error, std::size_t bytes_transferred)
+{
+	// datablock を読み込む
+	connection->read_streambuf(bytes_transferred);
+
+	// 処理
+	connection->buffer() += " STORED\r\n";
+
+	// 結果を書き込む
+	connection->async_write_result();
 }
 
 } // namespace mmc
