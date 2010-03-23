@@ -41,10 +41,10 @@ CommandPtr Command::parse(const std::string& command)
 	}
 
 	// parse
-	if      (!cmd) cmd = StorageCommand::parse(name);
-	else if (!cmd) cmd = OtherCommand::parse(name);
-	else if (!cmd) cmd = StorageCommand::parse(name);
-	else if (!cmd) cmd = StorageCommand::parse(name);
+	if (!cmd) cmd = StorageCommand::parse(name);
+	if (!cmd) cmd = OtherCommand::parse(name);
+	if (!cmd) cmd = StorageCommand::parse(name);
+	if (!cmd) cmd = StorageCommand::parse(name);
 
 	if (cmd && cmd->parse(args))
 		return cmd;
