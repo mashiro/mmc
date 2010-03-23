@@ -1,4 +1,5 @@
 #include "connection.hpp"
+#include "cache_base.hpp"
 #include "command/command.hpp"
 #include <boost/bind.hpp>
 #include <vector>
@@ -6,9 +7,10 @@
 
 namespace mmc {
 
-Connection::Connection(io_service_type& io_service)
+Connection::Connection(io_service_type& io_service, CacheBaseWeakPtr cache)
 	: strand_(io_service)
 	, socket_(io_service)
+	, MMC_PROPERTY_NAME(cache)(cache)
 {}
 
 Connection::socket_type& Connection::socket()

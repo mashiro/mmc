@@ -1,6 +1,7 @@
 #ifndef MMC_STORAGE_COMMAND_HPP_INCLUDED
 #define MMC_STORAGE_COMMAND_HPP_INCLUDED
 
+#include "config.hpp"
 #include "utility.hpp"
 #include "asio_base.hpp"
 #include "command/command.hpp"
@@ -21,14 +22,15 @@ public:
 	virtual void execute(ConnectionPtr connection);
 
 private:
-	void handle_datablock_read(ConnectionPtr connection, const boost::system::error_code& error, std::size_t bytes_transferred);
+	void handle_datablock_read(ConnectionPtr connection,
+			const boost::system::error_code& error, std::size_t bytes_transferred);
 
 public:
 	MMC_PROPERTY_DEF(std::string, key)
-	MMC_PROPERTY_DEF(boost::uint32_t, flags)
-	MMC_PROPERTY_DEF(boost::uint32_t, exptime)
-	MMC_PROPERTY_DEF(boost::uint32_t, bytes)
-	MMC_PROPERTY_DEF(boost::uint64_t, cas)
+	MMC_PROPERTY_DEF(cache_flags_type, flags)
+	MMC_PROPERTY_DEF(cache_exptime_type, exptime)
+	MMC_PROPERTY_DEF(cache_bytes_type, bytes)
+	MMC_PROPERTY_DEF(cache_cas_type, cas)
 	MMC_PROPERTY_DEF(bool, noreply)
 };
 

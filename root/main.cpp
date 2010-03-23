@@ -1,9 +1,9 @@
 #include "server.hpp"
+#include "cache.hpp"
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 #include <boost/cstdint.hpp>
-
 
 int main(int argc, char* argv[])
 {
@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
 
 		// start server
 		mmc::Server server(address, port, threads);
+		server.set_cache(mmc::CachePtr(new mmc::Cache()));
 		server.start();
 	}
 	catch (std::exception& e)

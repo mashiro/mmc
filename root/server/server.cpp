@@ -48,7 +48,7 @@ void Server::handle_accept(ConnectionPtr connection, const boost::system::error_
 
 void Server::async_accept()
 {
-	ConnectionPtr connection(new Connection(io_service_));
+	ConnectionPtr connection(new Connection(io_service_, cache_));
 
 	acceptor_.async_accept(connection->socket(),
 		boost::bind(&Server::handle_accept, this,

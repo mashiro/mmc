@@ -3,11 +3,14 @@
 
 #include "asio_base.hpp"
 #include "constant.hpp"
+#include "utility.hpp"
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
 namespace mmc {
+
+MMC_FWD_DECL_CLASS(CacheBase)
 	
 class Connection
 	: public AsioBase
@@ -26,7 +29,7 @@ public:
 	typedef base::resolver_type resolver_type;
 
 public:
-	explicit Connection(io_service_type& io_service);
+	explicit Connection(io_service_type& io_service, CacheBaseWeakPtr cache);
 
 	socket_type& socket();
 	const socket_type& socket() const;
@@ -65,6 +68,9 @@ public:
 
 	// buffer のデータを書き込みコネクションを閉じる
 	void async_write_result();
+
+public:
+	MMC_PROPERTY_DEF(CacheBaseWeakPtr, cache)
 
 private:
 	void handle_read(const boost::system::error_code& error, std::size_t bytes_transferred);

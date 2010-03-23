@@ -9,6 +9,7 @@
 namespace mmc {
 
 MMC_FWD_DECL_CLASS(Connection)
+MMC_FWD_DECL_CLASS(CacheBase)
 
 class Server
 	: public AsioBase
@@ -29,6 +30,9 @@ public:
 
 	void start();
 	void stop();
+
+public:
+	MMC_PROPERTY_DEF(CacheBasePtr, cache)
 
 private:
 	void handle_accept(ConnectionPtr connection, const boost::system::error_code& error);

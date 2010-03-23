@@ -1,8 +1,8 @@
 #ifndef MMC_COMMAND_HPP_INCLUDED
 #define MMC_COMMAND_HPP_INCLUDED
 
+#include "config.hpp"
 #include "utility.hpp"
-#include <boost/cstdint.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>

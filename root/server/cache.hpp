@@ -1,21 +1,20 @@
 #ifndef MMC_CACHE_HPP_INCLUDED
 #define MMC_CACHE_HPP_INCLUDED
 
-#include <boost/noncopyable.hpp>
+#include "cache_base.hpp"
 
 namespace mmc {
 
-class CacheBase
-	: private boost::noncopyable
-{
-public:
-};
 
-class Cache
-	: private boost::noncopyable
+MMC_FWD_DECL_CLASS(Cache)
+
+class Cache : public CacheBase
 {
 public:
 	Cache();
+
+public:
+	virtual bool set(const StorageCommand& command, const std::string& data) {}
 };
 
 } // namespace mmc
