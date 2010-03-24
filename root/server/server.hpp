@@ -35,8 +35,8 @@ public:
 	MMC_PROPERTY_DEF(CacheBasePtr, cache)
 
 private:
-	void handle_accept(ConnectionPtr connection, const boost::system::error_code& error);
 	void async_accept();
+	void handle_accept(ConnectionPtr connection, const boost::system::error_code& error);
 
 private:
 	io_service_type io_service_;
