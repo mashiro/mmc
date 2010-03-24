@@ -1,5 +1,6 @@
 #include "command/storage_command.hpp"
 #include "connection.hpp"
+#include "cache_base.hpp"
 #include "lexical.hpp"
 #include "constant.hpp"
 #include <boost/bind.hpp>
@@ -84,10 +85,40 @@ void StorageCommand::execute(ConnectionPtr connection)
 void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	// datablock を読み込む
-	connection->read_streambuf(bytes_transferred);
+	std::string& buffer = connection->read_streambuf(bytes_transferred);
+	if (buffer.size() != get_bytes())
+	{
+		// 長さが違う
+		buffer = constant::client_error;
+		buffer += " bad data chunk";
+		buffer += constant::crlf;
+	}
+	else
+	{
+		// 処理
+		ResultCode::type result = ResultCode::none;
+		if (CacheBasePtr cache = connection->get_cache())
+		{
+			switch (get_type())
+			{
+				case CommandType::set:     result = cache->set(*this, buffer); break;
+				case CommandType::add:     result = cache->add(*this, buffer); break;
+				case CommandType::replace: result = cache->replace(*this, buffer); break;
+				case CommandType::append:  result = cache->append(*this, buffer); break;
+				case CommandType::prepend: result = cache->prepend(*this, buffer); break;
+				case CommandType::cas:     result = cache->cas(*this, buffer); break;
+			}
 
-	// 処理
-	connection->buffer() += " STORED\r\n";
+			buffer = result_code_to_string(result);
+			buffer += constant::crlf;
+		}
+		else
+		{
+			buffer = constant::server_error;
+			buffer += " cache missing";
+			buffer += constant::crlf;
+		}
+	}
 
 	// 結果を書き込む
 	connection->async_write_result();

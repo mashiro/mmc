@@ -43,7 +43,7 @@ public:
 	virtual ResultCode::type cas(const StorageCommand& command, const std::string& data);
 
 private:
-	cache_cas_type get_cas();
+	cache_cas_type get_next_cas();
 
 private:
 	map_type map_;

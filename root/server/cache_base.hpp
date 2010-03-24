@@ -7,14 +7,6 @@
 
 namespace mmc {
 
-MMC_ENUM_BEGIN(ResultCode)
-	stored,
-	not_stored,
-	exists,
-	not_found,
-	deleted,
-MMC_ENUM_END()
-
 MMC_FWD_DECL_CLASS(StorageCommand)
 MMC_FWD_DECL_CLASS(CacheBase)
 MMC_FWD_DECL_CLASS(CacheRecord)

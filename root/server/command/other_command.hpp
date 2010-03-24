@@ -1,9 +1,6 @@
 #ifndef MMC_OTHER_COMMAND_HPP_INCLUDED
 #define MMC_OTHER_COMMAND_HPP_INCLUDED
 
-#include "config.hpp"
-#include "utility.hpp"
-#include "asio_base.hpp"
 #include "command/command.hpp"
 
 namespace mmc {

@@ -3,22 +3,13 @@
 
 #include "config.hpp"
 #include "utility.hpp"
+#include "asio_base.hpp"
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <vector>
-#include <string>
 
 namespace mmc {
-
-MMC_ENUM_BEGIN(CommandType)
-	// none
-	none, 
-	// storage
-	set, add, replace, append, prepend, cas,
-	// other
-	version, quit,
-MMC_ENUM_END()
 
 MMC_FWD_DECL_CLASS(Command)
 MMC_FWD_DECL_CLASS(Connection)

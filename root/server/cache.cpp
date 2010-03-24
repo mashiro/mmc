@@ -19,7 +19,7 @@ ResultCode::type Cache::set(const StorageCommand& command, const std::string& da
 	record.set_data(data);
 	record.set_flags(command.get_flags());
 	record.set_exptime(command.get_exptime());
-	record.set_cas(get_cas());
+	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
@@ -40,7 +40,7 @@ ResultCode::type Cache::add(const StorageCommand& command, const std::string& da
 	record.set_data(data);
 	record.set_flags(command.get_flags());
 	record.set_exptime(command.get_exptime());
-	record.set_cas(get_cas());
+	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
@@ -59,18 +59,46 @@ ResultCode::type Cache::replace(const StorageCommand& command, const std::string
 	record.set_data(data);
 	record.set_flags(command.get_flags());
 	record.set_exptime(command.get_exptime());
-	record.set_cas(get_cas());
+	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
 
 ResultCode::type Cache::append(const StorageCommand& command, const std::string& data)
 {
+	unique_lock_type ulock(mutex_);
+	iterator it = map_.find(command.get_key());
+	if (it == map_.end())
+	{
+		return ResultCode::not_stored;
+	}
+
+	CacheRecord& record = it->second;
+	record.set_key(command.get_key());
+	record.set_data(record.get_data() + data);
+	record.set_flags(command.get_flags());
+	record.set_exptime(command.get_exptime());
+	record.set_cas(get_next_cas());
+
 	return ResultCode::stored;
 }
 
 ResultCode::type Cache::prepend(const StorageCommand& command, const std::string& data)
 {
+	unique_lock_type ulock(mutex_);
+	iterator it = map_.find(command.get_key());
+	if (it == map_.end())
+	{
+		return ResultCode::not_stored;
+	}
+
+	CacheRecord& record = it->second;
+	record.set_key(command.get_key());
+	record.set_data(data + record.get_data());
+	record.set_flags(command.get_flags());
+	record.set_exptime(command.get_exptime());
+	record.set_cas(get_next_cas());
+
 	return ResultCode::stored;
 }
 
@@ -79,7 +107,7 @@ ResultCode::type Cache::cas(const StorageCommand& command, const std::string& da
 	return ResultCode::stored;
 }
 
-cache_cas_type Cache::get_cas()
+cache_cas_type Cache::get_next_cas()
 {
 	atomic_cas_type p1 = boost::atomic_load(&cas_);
 	while (1)
