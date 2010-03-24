@@ -25,7 +25,6 @@ CommandPtr OtherCommand::parse(const std::string& name)
 
 bool OtherCommand::parse(const arguments_type& args)
 {
-	return true;
 	return args.size() == 0;
 }
 

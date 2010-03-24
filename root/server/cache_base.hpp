@@ -15,16 +15,6 @@ MMC_ENUM_BEGIN(ResultCode)
 	deleted,
 MMC_ENUM_END()
 
-class CacheData
-{
-public:
-	MMC_PROPERTY_DEF(std::string, key)
-	MMC_PROPERTY_DEF(std::string, data)
-	MMC_PROPERTY_DEF(cache_flags_type, flags)
-	MMC_PROPERTY_DEF(cache_exptime_type, exptime)
-	MMC_PROPERTY_DEF(cache_cas_type, cas)
-};
-
 MMC_FWD_DECL_CLASS(StorageCommand)
 MMC_FWD_DECL_CLASS(CacheBase)
 
