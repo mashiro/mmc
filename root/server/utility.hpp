@@ -1,6 +1,7 @@
 #ifndef MMC_UTILITY_HPP_INCLUDED
 #define MMC_UTILITY_HPP_INCLUDED
 
+#include "config.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
@@ -18,10 +19,6 @@
 	MMC_FWD_DECL_WEAK_PTR(name); \
 /**/
 
-// scoped enum
-#define MMC_ENUM_BEGIN(name) struct name { enum type {
-#define MMC_ENUM_END()       };};
-
 // property
 #define MMC_PROPERTY_NAME(name) name##_
 #define MMC_PROPERTY_DEF(type, name) \
@@ -32,5 +29,11 @@
 		const type& get_##name() const { return MMC_PROPERTY_NAME(name); } \
 		void set_##name(const type& value) { MMC_PROPERTY_NAME(name) = value; } \
 /**/
+
+namespace mmc {
+
+const char* result_code_to_string(ResultCode::type result);
+
+} // namespace mmc
 
 #endif /* MMC_UTILITY_HPP_INCLUDED */
