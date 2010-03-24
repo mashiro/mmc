@@ -32,9 +32,11 @@ void OtherCommand::execute(ConnectionPtr connection)
 {
 	switch (get_type())
 	{
-	case CommandType::quit:
-		connection->shutdown();
-		break;
+		case CommandType::quit:
+			connection->shutdown();
+			break;
+		default:
+			break;
 	}
 }
 
