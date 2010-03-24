@@ -35,6 +35,37 @@ bool RetrievalCommand::parse(const arguments_type& args)
 
 void RetrievalCommand::execute(ConnectionPtr connection)
 {
+	// 処理
+	ResultCode::type result = ResultCode::none;
+	if (CacheBasePtr cache = connection->get_cache())
+	{
+		typedef keys_type::const_iterator iter_t;
+		iter_t it = get_keys().begin();
+		iter_t endit = get_keys().end();
+
+		while (it != endit)
+		{
+			boost::optional<CacheRecord> record;
+			switch (get_type())
+			{
+				case CommandType::get: record = cache->get(*it); break;
+				case CommandType::gets: record = cache->gets(*it); break;
+			}
+
+			// ちゃんと boost::asio::buffer の配列にいれて渡す
+			if (record)
+			{
+				connection->buffer() = record->get_data() + constant::crlf;
+			}
+
+			++it;
+		}
+	}
+
+	connection->buffer() += constant::end;
+	connection->buffer() += constant::crlf;
+
+	connection->async_write_result();
 }
 
 } // namespace mmc

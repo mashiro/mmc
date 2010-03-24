@@ -1,5 +1,6 @@
 #include "command/command_base.hpp"
 #include "command/storage_command.hpp"
+#include "command/retrieval_command.hpp"
 #include "command/other_command.hpp"
 #include <boost/tokenizer.hpp>
 
@@ -45,10 +46,8 @@ CommandBasePtr CommandBase::parse(const std::string& command)
 
 	// parse
 	if (!cmd) cmd = StorageCommand::parse(name);
+	if (!cmd) cmd = RetrievalCommand::parse(name);
 	if (!cmd) cmd = OtherCommand::parse(name);
-	if (!cmd) cmd = StorageCommand::parse(name);
-	if (!cmd) cmd = StorageCommand::parse(name);
-
 	if (cmd && cmd->parse(args))
 		return cmd;
 	else

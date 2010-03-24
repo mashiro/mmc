@@ -36,6 +36,10 @@ void OtherCommand::execute(ConnectionPtr connection)
 			connection->shutdown();
 			break;
 		default:
+			// 適当
+			connection->buffer() = constant::error;
+			connection->buffer() += constant::crlf;
+			connection->async_write_result();
 			break;
 	}
 }

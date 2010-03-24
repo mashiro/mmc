@@ -17,7 +17,8 @@ MMC_FWD_DECL_CLASS(Connection)
 class CommandBase : private boost::noncopyable
 {
 public:
-	typedef std::vector<std::string> arguments_type;
+	typedef std::string argument_type;
+	typedef std::vector<argument_type> arguments_type;
 
 public:
 	CommandBase(const std::string& name, CommandType::type type);
