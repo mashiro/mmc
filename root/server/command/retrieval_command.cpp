@@ -8,13 +8,13 @@
 namespace mmc {
 
 RetrievalCommand::RetrievalCommand(const std::string& name, CommandType::type type) 
-	: Command(name, type)
+	: CommandBase(name, type)
 {}
 
 RetrievalCommand::~RetrievalCommand()
 {}
 
-CommandPtr RetrievalCommand::parse(const std::string& name)
+CommandBasePtr RetrievalCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
 	if      (name == constant::get)  type = CommandType::get;

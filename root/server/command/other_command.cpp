@@ -7,10 +7,10 @@
 namespace mmc {
 
 OtherCommand::OtherCommand(const std::string& name, CommandType::type type) 
-	: Command(name, type)
+	: CommandBase(name, type)
 {}
 
-CommandPtr OtherCommand::parse(const std::string& name)
+CommandBasePtr OtherCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
 	if      (name == constant::version) type = CommandType::version;

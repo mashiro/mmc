@@ -8,7 +8,7 @@
 namespace mmc {
 
 StorageCommand::StorageCommand(const std::string& name, CommandType::type type) 
-	: Command(name, type)
+	: CommandBase(name, type)
 	, MMC_PROPERTY_NAME(key)()
 	, MMC_PROPERTY_NAME(flags)(0)
 	, MMC_PROPERTY_NAME(exptime)(0)
@@ -20,7 +20,7 @@ StorageCommand::StorageCommand(const std::string& name, CommandType::type type)
 StorageCommand::~StorageCommand()
 {}
 
-CommandPtr StorageCommand::parse(const std::string& name)
+CommandBasePtr StorageCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
 	if      (name == constant::set)     type = CommandType::set;
@@ -101,12 +101,12 @@ void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost
 		{
 			switch (get_type())
 			{
-				case CommandType::set:     result = cache->set(*this, buffer); break;
-				case CommandType::add:     result = cache->add(*this, buffer); break;
-				case CommandType::replace: result = cache->replace(*this, buffer); break;
-				case CommandType::append:  result = cache->append(*this, buffer); break;
-				case CommandType::prepend: result = cache->prepend(*this, buffer); break;
-				case CommandType::cas:     result = cache->cas(*this, buffer); break;
+				case CommandType::set:     result = cache->set(get_key(), get_flags(), get_exptime(), buffer); break;
+				case CommandType::add:     result = cache->add(get_key(), get_flags(), get_exptime(), buffer); break;
+				case CommandType::replace: result = cache->replace(get_key(), get_flags(), get_exptime(), buffer); break;
+				case CommandType::append:  result = cache->append(get_key(), get_flags(), get_exptime(), buffer); break;
+				case CommandType::prepend: result = cache->prepend(get_key(), get_flags(), get_exptime(), buffer); break;
+				case CommandType::cas:     result = cache->cas(get_key(), get_flags(), get_exptime(), get_cas(), buffer); break;
 			}
 
 			buffer = result_code_to_string(result);
