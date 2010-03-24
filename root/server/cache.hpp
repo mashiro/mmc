@@ -31,7 +31,9 @@ public:
 
 public:
 	Cache();
+	virtual ~Cache();
 
+public:
 	// storage
 	virtual ResultCode::type set(const StorageCommand& command, const std::string& data);
 	virtual ResultCode::type add(const StorageCommand& command, const std::string& data);

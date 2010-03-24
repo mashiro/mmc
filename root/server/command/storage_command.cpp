@@ -16,6 +16,9 @@ StorageCommand::StorageCommand(const std::string& name, CommandType::type type)
 	, MMC_PROPERTY_NAME(noreply)(false)
 {}
 
+StorageCommand::~StorageCommand()
+{}
+
 CommandPtr StorageCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;

@@ -30,6 +30,7 @@ public:
 
 public:
 	Command(const std::string& name, CommandType::type type);
+	virtual ~Command();
 
 	static CommandPtr parse(const std::string& command);
 	virtual bool parse(const arguments_type& args) = 0;

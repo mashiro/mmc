@@ -16,6 +16,7 @@ class StorageCommand
 {
 public:
 	StorageCommand(const std::string& name, CommandType::type type);
+	virtual ~StorageCommand();
 
 	static CommandPtr parse(const std::string& name);
 	virtual bool parse(const arguments_type& args);

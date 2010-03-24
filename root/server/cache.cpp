@@ -8,6 +8,9 @@ Cache::Cache()
 	: cas_(new cache_cas_type(boost::initialized_value))
 {}
 
+Cache::~Cache()
+{}
+
 ResultCode::type Cache::set(const StorageCommand& command, const std::string& data)
 {
 	unique_lock_type ulock(mutex_);

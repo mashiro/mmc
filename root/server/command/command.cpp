@@ -10,6 +10,9 @@ Command::Command(const std::string& name, CommandType::type type)
 	, MMC_PROPERTY_NAME(type)(type)
 {}
 
+Command::~Command()
+{}
+
 CommandPtr Command::parse(const std::string& command)
 {
 	CommandPtr cmd;

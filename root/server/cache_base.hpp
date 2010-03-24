@@ -33,6 +33,10 @@ class CacheBase
 	: private boost::noncopyable
 {
 public:
+	CacheBase() {}
+	virtual ~CacheBase() {}
+
+public:
 	// storage
 	virtual ResultCode::type set(const StorageCommand& command, const std::string& data) = 0;
 	virtual ResultCode::type add(const StorageCommand& command, const std::string& data) = 0;
