@@ -10,7 +10,7 @@ namespace mmc {
 Connection::Connection(io_service_type& io_service, CacheBaseWeakPtr cache)
 	: strand_(io_service)
 	, socket_(io_service)
-	, MMC_PROPERTY_NAME(cache)(cache)
+	, cache_(cache)
 {}
 
 Connection::socket_type& Connection::socket()
@@ -23,16 +23,6 @@ const Connection::socket_type& Connection::socket() const
 	return socket_;
 }
 
-Connection::streambuf_type& Connection::streambuf()
-{
-	return streambuf_;
-}
-
-const Connection::streambuf_type& Connection::streambuf() const
-{
-	return streambuf_;
-}
-
 std::string& Connection::buffer()
 {
 	return buffer_;
@@ -43,11 +33,21 @@ const std::string& Connection::buffer() const
 	return buffer_;
 }
 
+CacheBasePtr Connection::get_cache() const
+{
+	return cache_.lock();
+}
+
 void Connection::start()
 {
-	async_read(boost::bind(&Connection::handle_read, shared_from_this(),
+	async_read(boost::bind(&Connection::handle_read_command, shared_from_this(),
 		boost::asio::placeholders::error,
 		boost::asio::placeholders::bytes_transferred));
+}
+
+void Connection::restart()
+{
+	start();
 }
 
 void Connection::shutdown()
@@ -56,21 +56,15 @@ void Connection::shutdown()
 	socket_.shutdown(socket_type::shutdown_both, ignored_ec);
 }
 
-void Connection::read_streambuf(std::size_t bytes_transferred)
+std::string& Connection::read_streambuf(std::size_t bytes_transferred)
 {
 	const char* data = boost::asio::buffer_cast<const char*>(streambuf_.data());
 	streambuf_.consume(bytes_transferred);
-	buffer_.assign(data, data + bytes_transferred - 2);
+	buffer_.assign(data, data + bytes_transferred - 2); // 終端の CRLF を除く
+	return buffer_;
 }
 
-void Connection::async_write_result()
-{
-	async_write(boost::asio::buffer(buffer_),
-		boost::bind(&Connection::handle_write, shared_from_this(),
-			boost::asio::placeholders::error));
-}
-
-void Connection::handle_read(const boost::system::error_code& error, std::size_t bytes_transferred)
+void Connection::handle_read_command(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	if (!error)
 	{
@@ -86,19 +80,16 @@ void Connection::handle_read(const boost::system::error_code& error, std::size_t
 			// error
 			buffer_ = constant::error;
 			buffer_ += constant::crlf;
-			async_write(boost::asio::buffer(buffer_),
-				boost::bind(&Connection::handle_write, shared_from_this(),
-					boost::asio::placeholders::error));
+			async_write_result();
 		}
 	}
 }
 
-void Connection::handle_write(const boost::system::error_code& error)
+void Connection::handle_write_result(const boost::system::error_code& error)
 {
 	if (!error)
 	{
-		// restart
-		start();
+		restart();
 	}
 }
 
