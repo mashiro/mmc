@@ -1,6 +1,6 @@
 #include "command/storage_command.hpp"
+#include "cache/cache_base.hpp"
 #include "connection.hpp"
-#include "cache_base.hpp"
 #include "lexical.hpp"
 #include "constant.hpp"
 #include <boost/bind.hpp>

@@ -24,6 +24,7 @@ MMC_ENUM_END()
 MMC_ENUM_BEGIN(CommandType)
 	none, 
 	set, add, replace, append, prepend, cas,
+	get, gets,
 	version, quit,
 MMC_ENUM_END()
 

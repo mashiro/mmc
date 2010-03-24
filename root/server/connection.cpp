@@ -1,6 +1,6 @@
 #include "connection.hpp"
-#include "cache_base.hpp"
 #include "command/command.hpp"
+#include "cache/cache_base.hpp"
 #include <boost/bind.hpp>
 #include <vector>
 #include <algorithm>

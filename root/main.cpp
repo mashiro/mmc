@@ -1,5 +1,5 @@
 #include "server.hpp"
-#include "cache.hpp"
+#include "cache/cache.hpp"
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>

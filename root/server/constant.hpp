@@ -16,6 +16,10 @@ namespace mmc { namespace constant {
 	const char* const prepend = "prepend";
 	const char* const cas     = "cas";
 
+	// retrieval
+	const char* const get     = "get";
+	const char* const gets    = "gets";
+
 	// other
 	const char* const version = "version";
 	const char* const quit    = "quit";
@@ -29,6 +33,8 @@ namespace mmc { namespace constant {
 	const char* const exists       = "EXISTS";
 	const char* const not_found    = "NOT_FOUND";
 	const char* const end          = "END";
+
+	// message
 
 }} // namespace mmc::constant
 

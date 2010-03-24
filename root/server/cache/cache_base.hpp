@@ -25,8 +25,8 @@ class CacheBase
 	: private boost::noncopyable
 {
 public:
-	CacheBase() {}
-	virtual ~CacheBase() {}
+	CacheBase();
+	virtual ~CacheBase();
 
 public:
 	// storage

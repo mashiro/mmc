@@ -1,10 +1,15 @@
 set(NAME mmc_server)
 
-add_subdirectory(command)
-
 file(GLOB MMC_SERVER_SOURCES *.cpp *.hpp)
-add_library(${NAME} STATIC ${MMC_SERVER_SOURCES})
-target_link_libraries(${NAME} mmc_command)
+file(GLOB MMC_COMMAND_SOURCES command/*.cpp command/*.hpp)
+file(GLOB MMC_CACHE_SOURCES cache/*.cpp cache/*.hpp)
+
+add_library(${NAME} STATIC
+	${MMC_SERVER_SOURCES}
+	${MMC_COMMAND_SOURCES}
+	${MMC_CACHE_SOURCES}
+)
+
 if (NOT WIN32)
 	target_link_libraries(${NAME} boost_system-mt)
 	target_link_libraries(${NAME} boost_thread-mt)
