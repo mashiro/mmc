@@ -1,2 +1,4 @@
-file(GLOB MMC_SOURCES *.cpp)
-add_library(mmc_command STATIC ${MMC_SOURCES})
+set(NAME mmc_command)
+
+file(GLOB MMC_COMMAND_SOURCES *.cpp *.hpp)
+add_library(${NAME} STATIC ${MMC_COMMAND_SOURCES})

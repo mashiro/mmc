@@ -1,7 +1,11 @@
+set(NAME mmc)
+
 include_directories(server)
 add_subdirectory(server)
-add_executable(mmc main.cpp)
-target_link_libraries(mmc mmc_server)
+
+file(GLOB MMC_SOURCES *.cpp *.hpp)
+add_executable(${NAME} ${MMC_SOURCES})
+target_link_libraries(${NAME} mmc_server)
 if (NOT WIN32)
-	target_link_libraries(mmc boost_program_options-mt)
+	target_link_libraries(${NAME} boost_program_options-mt)
 endif (NOT WIN32)
