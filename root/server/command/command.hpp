@@ -3,10 +3,10 @@
 
 #include "config.hpp"
 #include "utility.hpp"
-#include "asio_base.hpp"
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/system/error_code.hpp>
 #include <vector>
 
 namespace mmc {

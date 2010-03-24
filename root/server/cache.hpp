@@ -4,9 +4,9 @@
 #include "cache_base.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
+#include <boost/pool/pool_alloc.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread/locks.hpp>
-#include <boost/pool/pool_alloc.hpp>
 
 namespace mmc {
 
