@@ -1,33 +1,30 @@
-#include "cache.hpp"
-#include "command/storage_command.hpp"
-#include <boost/utility/value_init.hpp>
+#include "cache/cache.hpp"
 
 namespace mmc {
 
 Cache::Cache()
-	: cas_(new cache_cas_type(boost::initialized_value))
+	: cas_(new cache_cas_type(0))
 {}
 
 Cache::~Cache()
 {}
 
-ResultCode::type Cache::set(const StorageCommand& command, const std::string& data)
+ResultCode::type Cache::set(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data)
 {
 	unique_lock_type ulock(mutex_);
-	CacheRecord& record = map_[command.get_key()];
-	record.set_key(command.get_key());
+	value_type& record = map_[key];
 	record.set_data(data);
-	record.set_flags(command.get_flags());
-	record.set_exptime(command.get_exptime());
+	record.set_flags(flags);
+	record.set_exptime(exptime);
 	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
 
-ResultCode::type Cache::add(const StorageCommand& command, const std::string& data)
+ResultCode::type Cache::add(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data)
 {
 	shared_lock_type slock(mutex_);
-	iterator it = map_.find(command.get_key());
+	iterator it = map_.find(key);
 	if (it != map_.end())
 	{
 		return ResultCode::not_stored;
@@ -35,74 +32,70 @@ ResultCode::type Cache::add(const StorageCommand& command, const std::string& da
 	slock.unlock();
 
 	unique_lock_type ulock(mutex_);
-	CacheRecord& record = map_[command.get_key()];
-	record.set_key(command.get_key());
+	value_type& record = map_[key];
 	record.set_data(data);
-	record.set_flags(command.get_flags());
-	record.set_exptime(command.get_exptime());
+	record.set_flags(flags);
+	record.set_exptime(exptime);
 	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
 
-ResultCode::type Cache::replace(const StorageCommand& command, const std::string& data)
+ResultCode::type Cache::replace(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data)
 {
 	unique_lock_type ulock(mutex_);
-	iterator it = map_.find(command.get_key());
+	iterator it = map_.find(key);
 	if (it == map_.end())
 	{
 		return ResultCode::not_stored;
 	}
 
-	CacheRecord& record = it->second;
-	record.set_key(command.get_key());
+	value_type& record = it->second;
 	record.set_data(data);
-	record.set_flags(command.get_flags());
-	record.set_exptime(command.get_exptime());
+	record.set_flags(flags);
+	record.set_exptime(exptime);
 	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
 
-ResultCode::type Cache::append(const StorageCommand& command, const std::string& data)
+ResultCode::type Cache::append(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data)
 {
 	unique_lock_type ulock(mutex_);
-	iterator it = map_.find(command.get_key());
+	iterator it = map_.find(key);
 	if (it == map_.end())
 	{
 		return ResultCode::not_stored;
 	}
 
-	CacheRecord& record = it->second;
-	record.set_key(command.get_key());
-	record.set_data(record.get_data() + data);
-	record.set_flags(command.get_flags());
-	record.set_exptime(command.get_exptime());
+	value_type& record = it->second;
+	record.set_data(data);
+	record.set_flags(flags);
+	record.set_exptime(exptime);
 	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
 
-ResultCode::type Cache::prepend(const StorageCommand& command, const std::string& data)
+ResultCode::type Cache::prepend(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data)
 {
 	unique_lock_type ulock(mutex_);
-	iterator it = map_.find(command.get_key());
+	iterator it = map_.find(key);
 	if (it == map_.end())
 	{
 		return ResultCode::not_stored;
 	}
 
-	CacheRecord& record = it->second;
-	record.set_key(command.get_key());
-	record.set_data(data + record.get_data());
-	record.set_flags(command.get_flags());
-	record.set_exptime(command.get_exptime());
+	value_type& record = it->second;
+	record.set_data(data);
+	record.set_flags(flags);
+	record.set_exptime(exptime);
 	record.set_cas(get_next_cas());
 
 	return ResultCode::stored;
 }
 
-ResultCode::type Cache::cas(const StorageCommand& command, const std::string& data)
+ResultCode::type Cache::cas(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, cache_cas_type cas, const std::string& data)
 {
 	return ResultCode::stored;
 }
@@ -117,6 +110,25 @@ cache_cas_type Cache::get_next_cas()
 		if (boost::atomic_compare_exchange(&cas_, &p1, p2)) break;
 	}
 	return *cas_;
+}
+
+
+boost::optional<CacheRecord> Cache::get(const std::string& key) const
+{
+	shared_lock_type slock(mutex_);
+
+	const_iterator it = map_.find(key);
+	if (it == map_.end())
+	{
+		return boost::optional<CacheRecord>();
+	}
+
+	return boost::optional<CacheRecord>(it->second);
+}
+
+boost::optional<CacheRecord> Cache::gets(const std::string& key) const
+{
+	return get(key);
 }
 
 } // namespace mmc

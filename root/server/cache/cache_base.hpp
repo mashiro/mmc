@@ -4,17 +4,16 @@
 #include "config.hpp"
 #include "utility.hpp"
 #include <boost/noncopyable.hpp>
+#include <boost/optional.hpp>
 
 namespace mmc {
 
-MMC_FWD_DECL_CLASS(StorageCommand)
-MMC_FWD_DECL_CLASS(CacheBase)
 MMC_FWD_DECL_CLASS(CacheRecord)
+MMC_FWD_DECL_CLASS(CacheBase)
 
 class CacheRecord
 {
 public:
-	MMC_PROPERTY_DEF(std::string, key)
 	MMC_PROPERTY_DEF(std::string, data)
 	MMC_PROPERTY_DEF(cache_flags_type, flags)
 	MMC_PROPERTY_DEF(cache_exptime_type, exptime)
@@ -30,12 +29,16 @@ public:
 
 public:
 	// storage
-	virtual ResultCode::type set(const StorageCommand& command, const std::string& data) = 0;
-	virtual ResultCode::type add(const StorageCommand& command, const std::string& data) = 0;
-	virtual ResultCode::type replace(const StorageCommand& command, const std::string& data) = 0;
-	virtual ResultCode::type append(const StorageCommand& command, const std::string& data) = 0;
-	virtual ResultCode::type prepend(const StorageCommand& command, const std::string& data) = 0;
-	virtual ResultCode::type cas(const StorageCommand& command, const std::string& data) = 0;
+	virtual ResultCode::type set(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data) = 0;
+	virtual ResultCode::type add(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data) = 0;
+	virtual ResultCode::type replace(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data) = 0;
+	virtual ResultCode::type append(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data) = 0;
+	virtual ResultCode::type prepend(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data) = 0;
+	virtual ResultCode::type cas(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, cache_cas_type cas, const std::string& data) = 0;
+
+	// retrieval
+	virtual boost::optional<CacheRecord> get(const std::string& key) const = 0;
+	virtual boost::optional<CacheRecord> gets(const std::string& key) const = 0;
 };
 
 } // namespace mmc

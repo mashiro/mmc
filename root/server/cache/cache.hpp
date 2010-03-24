@@ -1,7 +1,7 @@
 #ifndef MMC_CACHE_HPP_INCLUDED
 #define MMC_CACHE_HPP_INCLUDED
 
-#include "cache_base.hpp"
+#include "cache/cache_base.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/pool/pool_alloc.hpp>
@@ -35,19 +35,23 @@ public:
 
 public:
 	// storage
-	virtual ResultCode::type set(const StorageCommand& command, const std::string& data);
-	virtual ResultCode::type add(const StorageCommand& command, const std::string& data);
-	virtual ResultCode::type replace(const StorageCommand& command, const std::string& data);
-	virtual ResultCode::type append(const StorageCommand& command, const std::string& data);
-	virtual ResultCode::type prepend(const StorageCommand& command, const std::string& data);
-	virtual ResultCode::type cas(const StorageCommand& command, const std::string& data);
+	virtual ResultCode::type set(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data);
+	virtual ResultCode::type add(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data);
+	virtual ResultCode::type replace(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data);
+	virtual ResultCode::type append(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data);
+	virtual ResultCode::type prepend(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, const std::string& data);
+	virtual ResultCode::type cas(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, cache_cas_type cas, const std::string& data);
+
+	// retrieval
+	virtual boost::optional<CacheRecord> get(const std::string& key) const;
+	virtual boost::optional<CacheRecord> gets(const std::string& key) const;
 
 private:
 	cache_cas_type get_next_cas();
 
 private:
+	mutable shared_mutex_type mutex_;
 	map_type map_;
-	shared_mutex_type mutex_;
 	atomic_cas_type cas_;
 };
 
