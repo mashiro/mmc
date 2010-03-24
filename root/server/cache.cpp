@@ -1,9 +1,11 @@
 #include "cache.hpp"
 #include "command/storage_command.hpp"
+#include <boost/utility/value_init.hpp>
 
 namespace mmc {
 
 Cache::Cache()
+	: cas_(new cache_cas_type(boost::initialized_value))
 {}
 
 ResultCode::type Cache::set(const StorageCommand& command, const std::string& data)
@@ -14,7 +16,7 @@ ResultCode::type Cache::set(const StorageCommand& command, const std::string& da
 	record.set_data(data);
 	record.set_flags(command.get_flags());
 	record.set_exptime(command.get_exptime());
-	record.set_cas(command.get_cas());
+	record.set_cas(get_cas());
 
 	return ResultCode::stored;
 }
@@ -35,7 +37,7 @@ ResultCode::type Cache::add(const StorageCommand& command, const std::string& da
 	record.set_data(data);
 	record.set_flags(command.get_flags());
 	record.set_exptime(command.get_exptime());
-	record.set_cas(command.get_cas());
+	record.set_cas(get_cas());
 
 	return ResultCode::stored;
 }
@@ -54,7 +56,7 @@ ResultCode::type Cache::replace(const StorageCommand& command, const std::string
 	record.set_data(data);
 	record.set_flags(command.get_flags());
 	record.set_exptime(command.get_exptime());
-	record.set_cas(command.get_cas());
+	record.set_cas(get_cas());
 
 	return ResultCode::stored;
 }
@@ -72,6 +74,18 @@ ResultCode::type Cache::prepend(const StorageCommand& command, const std::string
 ResultCode::type Cache::cas(const StorageCommand& command, const std::string& data)
 {
 	return ResultCode::stored;
+}
+
+cache_cas_type Cache::get_cas()
+{
+	atomic_cas_type p1 = boost::atomic_load(&cas_);
+	while (1)
+	{
+		atomic_cas_type p2(new cache_cas_type(*p1));
+		++(*p2);
+		if (boost::atomic_compare_exchange(&cas_, &p1, p2)) break;
+	}
+	return *cas_;
 }
 
 } // namespace mmc
