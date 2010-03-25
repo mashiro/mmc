@@ -73,31 +73,30 @@ bool StorageCommand::parse(const arguments_type& args)
 	return true;
 }
 
-void StorageCommand::execute(ConnectionPtr connection)
+void StorageCommand::execute()
 {
-	connection->async_read(
-		boost::bind(&StorageCommand::handle_datablock_read, shared_from_this(),
-			connection,
+	get_connection()->async_read(
+		boost::bind(&StorageCommand::handle_datablock_read, shared_this(),
 			boost::asio::placeholders::error,
 			boost::asio::placeholders::bytes_transferred));
 }
 
-void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost::system::error_code& error, std::size_t bytes_transferred)
+void StorageCommand::handle_datablock_read(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	// datablock を読み込む
-	std::size_t length = connection->read_streambuf(bytes_transferred);
+	std::size_t length = get_connection()->read_streambuf(bytes_transferred);
 	if (length != get_bytes())
 	{
 		// 長さが違うエラー
-		write_result(constant::result::client_error, "bad data chunk");
+		add_result(constant::result::client_error, "bad data chunk");
 	}
 	else
 	{
 		// 処理
 		ResultCode::type result = ResultCode::none;
-		if (CacheBasePtr cache = connection->get_cache())
+		if (CacheBasePtr cache = get_connection()->get_cache())
 		{
-			const std::string& buffer = connection->get_buffer();
+			const std::string& buffer = get_connection()->get_buffer();
 			switch (get_type())
 			{
 				case CommandType::set:     result = cache->set(get_key(), get_flags(), get_exptime(), buffer); break;
@@ -108,17 +107,17 @@ void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost
 				case CommandType::cas:     result = cache->cas(get_key(), get_flags(), get_exptime(), get_cas(), buffer); break;
 			}
 
-			write_result(result_code_to_string(result));
+			add_result(result_code_to_string(result));
 		}
 		else
 		{
 			// キャッシュが存在しないエラー
-			write_result(constant::result::server_error, "cache missing");
+			add_result(constant::result::server_error, "cache missing");
 		}
 	}
 
 	// 結果を書き込む
-	connection->async_write_result(to_buffers());
+	async_write_result();
 }
 
 } // namespace mmc

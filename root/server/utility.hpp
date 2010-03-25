@@ -4,6 +4,7 @@
 #include "config.hpp"
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 // fwd
 #define MMC_FWD_DECL_SHARED_PTR(name) typedef boost::shared_ptr<name> name##Ptr
@@ -17,6 +18,18 @@
 	struct name; \
 	MMC_FWD_DECL_SHARED_PTR(name); \
 	MMC_FWD_DECL_WEAK_PTR(name); \
+/**/
+
+// shared this
+#define MMC_ENABLE_SHARED_THIS(type) \
+	boost::shared_ptr<type> shared_this() \
+	{ \
+		return boost::shared_static_cast<type>(shared_from_this()); \
+	} \
+	boost::shared_ptr<type const> shared_this() const \
+	{ \
+		return boost::shared_static_cast<type const>(shared_from_this()); \
+	} \
 /**/
 
 // property

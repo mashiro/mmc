@@ -5,8 +5,6 @@
 #include "constant.hpp"
 #include "utility.hpp"
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/bind.hpp>
 
 namespace mmc {
@@ -15,11 +13,13 @@ MMC_FWD_DECL_CLASS(CacheBase)
 	
 class Connection
 	: public AsioBase
-	, public boost::enable_shared_from_this<Connection>
 	, private boost::noncopyable
 {
 public:
+	MMC_ENABLE_SHARED_THIS(Connection)
+
 	explicit Connection(io_service_type& io_service, CacheBaseWeakPtr cache);
+	virtual ~Connection();
 
 	socket_type& socket();
 	const socket_type& socket() const;
@@ -40,30 +40,11 @@ public:
 		boost::asio::async_read_until(socket_, streambuf_, constant::crlf, strand_.wrap(handler));
 	}
 
-	template <typename Allocator, typename ReadHandler>
-	void async_read(boost::asio::basic_streambuf<Allocator>& buffer, ReadHandler handler)
-	{
-		boost::asio::async_read_until(socket_, buffer, constant::crlf, strand_.wrap(handler));
-	}
-
 	// 非同期で書き込む
 	template <typename ConstBufferSequence, typename WriteHandler>
 	void async_write(const ConstBufferSequence& buffers, WriteHandler handler)
 	{
 		boost::asio::async_write(socket_, buffers, strand_.wrap(handler));
-	}
-
-	// 非同期で結果を書き込む
-	template <typename ConstBufferSequence>
-	void async_write_result(const ConstBufferSequence& buffers)
-	{
-		async_write(buffers, boost::bind(&Connection::handle_write_result, shared_from_this(),
-			boost::asio::placeholders::error));
-	}
-
-	void async_write_result()
-	{
-		async_write_result(boost::asio::buffer(buffer_));
 	}
 
 private:

@@ -10,6 +10,9 @@ OtherCommand::OtherCommand(const std::string& name, CommandType::type type)
 	: CommandBase(name, type)
 {}
 
+OtherCommand::~OtherCommand()
+{}
+
 CommandBasePtr OtherCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
@@ -29,17 +32,17 @@ bool OtherCommand::parse(const arguments_type& args)
 	return args.size() == 0;
 }
 
-void OtherCommand::execute(ConnectionPtr connection)
+void OtherCommand::execute()
 {
 	switch (get_type())
 	{
 		case CommandType::version:
-			write_result(constant::result::version + constant::space + mmc_version);
-			connection->async_write_result(to_buffers());
+			add_result(constant::result::version + constant::space + mmc_version);
+			async_write_result();
 			break;
 
 		case CommandType::quit:
-			connection->shutdown();
+			get_connection()->shutdown();
 			break;
 	}
 }

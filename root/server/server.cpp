@@ -18,6 +18,9 @@ Server::Server(const std::string& address, const std::string& port, std::size_t 
 	acceptor_.listen();
 }
 
+Server::~Server()
+{}
+
 void Server::start()
 {
 	async_accept();

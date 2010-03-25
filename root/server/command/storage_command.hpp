@@ -9,19 +9,19 @@ MMC_FWD_DECL_CLASS(StorageCommand)
 
 class StorageCommand
 	: public CommandBase
-	, public boost::enable_shared_from_this<StorageCommand>
 {
 public:
+	MMC_ENABLE_SHARED_THIS(StorageCommand)
+
 	StorageCommand(const std::string& name, CommandType::type type);
 	virtual ~StorageCommand();
 
 	static CommandBasePtr parse(const std::string& name);
 	virtual bool parse(const arguments_type& args);
-	virtual void execute(ConnectionPtr connection);
+	virtual void execute();
 
 private:
-	void handle_datablock_read(ConnectionPtr connection,
-			const boost::system::error_code& error, std::size_t bytes_transferred);
+	void handle_datablock_read(const boost::system::error_code& error, std::size_t bytes_transferred);
 
 public:
 	MMC_PROPERTY_DEF(std::string, key)

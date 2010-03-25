@@ -33,11 +33,11 @@ bool RetrievalCommand::parse(const arguments_type& args)
 	return true;
 }
 
-void RetrievalCommand::execute(ConnectionPtr connection)
+void RetrievalCommand::execute()
 {
 	// 処理
 	ResultCode::type result = ResultCode::none;
-	if (CacheBasePtr cache = connection->get_cache())
+	if (CacheBasePtr cache = get_connection()->get_cache())
 	{
 		for (std::size_t i = 0; i < get_keys().size(); ++i)
 		{
@@ -60,14 +60,14 @@ void RetrievalCommand::execute(ConnectionPtr connection)
 				if (get_type() == CommandType::gets)
 					header += constant::space + to_string(record->get_cas());
 
-				write_result(constant::result::value, header);
-				write_result(record->get_data());
+				add_result(constant::result::value, header);
+				add_result(record->get_data());
 			}
 		}
 	}
 
-	write_result(constant::result::end);
-	connection->async_write_result(to_buffers());
+	add_result(constant::result::end);
+	async_write_result();
 }
 
 } // namespace mmc

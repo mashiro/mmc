@@ -1,16 +1,20 @@
 #ifndef MMC_ASIOBASE_HPP_INCLUDED
 #define MMC_ASIOBASE_HPP_INCLUDED
 
-#if defined(_MSC_VER)
-	#pragma warning(disable: 4503)
-#endif // _MSC_VER
-
+#include "utility.hpp"
 #include <boost/asio.hpp>
 
 namespace mmc {
 
 class AsioBase
+	: public boost::enable_shared_from_this<AsioBase>
 {
+public:
+	MMC_ENABLE_SHARED_THIS(AsioBase)
+
+	AsioBase() {}
+	virtual ~AsioBase() {}
+
 public:
 	typedef boost::asio::io_service io_service_type;
 	typedef boost::asio::io_service::strand strand_type;

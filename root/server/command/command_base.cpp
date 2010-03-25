@@ -2,6 +2,7 @@
 #include "command/storage_command.hpp"
 #include "command/retrieval_command.hpp"
 #include "command/other_command.hpp"
+#include "connection.hpp"
 #include "constant.hpp"
 #include <boost/tokenizer.hpp>
 
@@ -55,20 +56,21 @@ CommandBasePtr CommandBase::parse(const std::string& command)
 		return CommandBasePtr();
 }
 
-void CommandBase::write_result(const std::string& result)
+void CommandBase::add_result(const std::string& result)
 {
 	std::string s = result + constant::crlf;
 	MMC_PROPERTY_NAME(results).push_back(s);
 }
 
-void CommandBase::write_result(const std::string& result, const std::string& message)
+void CommandBase::add_result(const std::string& result, const std::string& message)
 {
 	std::string s = result + constant::space + message + constant::crlf;
 	MMC_PROPERTY_NAME(results).push_back(s);
 }
 
-std::vector<boost::asio::const_buffer> CommandBase::to_buffers() const
+void CommandBase::async_write_result()
 {
+	// create buffers
 	std::vector<boost::asio::const_buffer> buffers;
 	for (std::size_t i = 0; i < MMC_PROPERTY_NAME(results).size(); ++i)
 	{
@@ -76,7 +78,18 @@ std::vector<boost::asio::const_buffer> CommandBase::to_buffers() const
 		buffers.push_back(boost::asio::buffer(result));
 	}
 
-	return buffers;
+	// async write
+	get_connection()->async_write(buffers,
+		boost::bind(&CommandBase::handle_write_result, shared_this(),
+			boost::asio::placeholders::error));
+}
+
+void CommandBase::handle_write_result(const boost::system::error_code& error)
+{
+	if (!error)
+	{
+		get_connection()->restart();
+	}
 }
 
 } // namespace mmc

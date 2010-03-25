@@ -26,7 +26,10 @@ public:
 	typedef base::resolver_type resolver_type;
 
 public:
+	MMC_ENABLE_SHARED_THIS(Server)
+
 	explicit Server(const std::string& address, const std::string& port, std::size_t thread_pool_size);
+	virtual ~Server();
 
 	void start();
 	void stop();

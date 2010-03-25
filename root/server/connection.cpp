@@ -13,6 +13,9 @@ Connection::Connection(io_service_type& io_service, CacheBaseWeakPtr cache)
 	, cache_(cache)
 {}
 
+Connection::~Connection()
+{}
+
 Connection::socket_type& Connection::socket()
 {
 	return socket_;
@@ -25,7 +28,7 @@ const Connection::socket_type& Connection::socket() const
 
 void Connection::start()
 {
-	async_read(boost::bind(&Connection::handle_read_command, shared_from_this(),
+	async_read(boost::bind(&Connection::handle_read_command, shared_this(),
 		boost::asio::placeholders::error,
 		boost::asio::placeholders::bytes_transferred));
 }
@@ -68,14 +71,16 @@ void Connection::handle_read_command(const boost::system::error_code& error, std
 		CommandBasePtr command = CommandBase::parse(buffer_);
 		if (command)
 		{
-			command->execute(shared_from_this());
+			command->set_connection(shared_this());
+			command->execute();
 		}
 		else
 		{
 			// error
 			buffer_ = constant::result::error;
 			buffer_ += constant::crlf;
-			async_write_result();
+			async_write(boost::asio::buffer(buffer_), boost::bind(&Connection::handle_write_result, shared_this(),
+				boost::asio::placeholders::error));
 		}
 	}
 }

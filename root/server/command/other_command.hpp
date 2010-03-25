@@ -9,14 +9,16 @@ MMC_FWD_DECL_CLASS(OtherCommand)
 
 class OtherCommand
 	: public CommandBase
-	, public boost::enable_shared_from_this<OtherCommand>
 {
 public:
+	MMC_ENABLE_SHARED_THIS(OtherCommand)
+
 	OtherCommand(const std::string& name, CommandType::type type);
+	virtual ~OtherCommand();
 
 	static CommandBasePtr parse(const std::string& name);
 	virtual bool parse(const arguments_type& args);
-	virtual void execute(ConnectionPtr connection);
+	virtual void execute();
 };
 
 } // namespace mmc

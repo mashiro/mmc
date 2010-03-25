@@ -6,8 +6,6 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <vector>
 
 namespace mmc {
@@ -15,26 +13,35 @@ namespace mmc {
 MMC_FWD_DECL_CLASS(CommandBase)
 MMC_FWD_DECL_CLASS(Connection)
 
-class CommandBase : private boost::noncopyable
+class CommandBase
+	: public boost::enable_shared_from_this<CommandBase>
+	, private boost::noncopyable
 {
 public:
 	typedef std::string argument_type;
 	typedef std::vector<argument_type> arguments_type;
 
 public:
+	MMC_ENABLE_SHARED_THIS(CommandBase)
+
 	CommandBase(const std::string& name, CommandType::type type);
 	virtual ~CommandBase();
 
 	static CommandBasePtr parse(const std::string& command);
 	virtual bool parse(const arguments_type& args) = 0;
-	virtual void execute(ConnectionPtr connection) = 0;
+	virtual void execute() = 0;
 
 protected:
-	void write_result(const std::string& result);
-	void write_result(const std::string& result, const std::string& message);
+	void add_result(const std::string& result);
+	void add_result(const std::string& result, const std::string& message);
+	void async_write_result();
+
+private:
 	std::vector<boost::asio::const_buffer> to_buffers() const;
+	void handle_write_result(const boost::system::error_code& error);
 
 public:
+	MMC_PROPERTY_DEF(ConnectionPtr, connection)
 	MMC_PROPERTY_DEF(std::string, name)
 	MMC_PROPERTY_DEF(CommandType::type, type)
 	MMC_PROPERTY_DEF(arguments_type, results)
