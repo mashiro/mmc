@@ -2,6 +2,7 @@
 #define MMC_SERVER_HPP_INCLUDED
 
 #include "asio_base.hpp"
+#include "shared_object.hpp"
 #include "utility.hpp"
 #include <boost/noncopyable.hpp>
 #include <string>
@@ -13,6 +14,7 @@ MMC_FWD_DECL_CLASS(CacheBase)
 
 class Server
 	: public AsioBase
+	, public SharedObject
 	, private boost::noncopyable
 {
 public:

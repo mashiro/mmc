@@ -3,6 +3,7 @@
 
 #include "config.hpp"
 #include "utility.hpp"
+#include "shared_object.hpp"
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/noncopyable.hpp>
@@ -14,7 +15,7 @@ MMC_FWD_DECL_CLASS(CommandBase)
 MMC_FWD_DECL_CLASS(Connection)
 
 class CommandBase
-	: public boost::enable_shared_from_this<CommandBase>
+	: public SharedObject
 	, private boost::noncopyable
 {
 public:

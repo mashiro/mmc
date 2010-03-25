@@ -2,6 +2,7 @@
 #define MMC_CONNECTION_HPP_INCLUDED
 
 #include "asio_base.hpp"
+#include "shared_object.hpp"
 #include "constant.hpp"
 #include "utility.hpp"
 #include <boost/noncopyable.hpp>
@@ -13,6 +14,7 @@ MMC_FWD_DECL_CLASS(CacheBase)
 	
 class Connection
 	: public AsioBase
+	, public SharedObject
 	, private boost::noncopyable
 {
 public:

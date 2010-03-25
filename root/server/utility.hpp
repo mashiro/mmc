@@ -20,18 +20,6 @@
 	MMC_FWD_DECL_WEAK_PTR(name); \
 /**/
 
-// shared this
-#define MMC_ENABLE_SHARED_THIS(type) \
-	boost::shared_ptr<type> shared_this() \
-	{ \
-		return boost::shared_static_cast<type>(shared_from_this()); \
-	} \
-	boost::shared_ptr<type const> shared_this() const \
-	{ \
-		return boost::shared_static_cast<type const>(shared_from_this()); \
-	} \
-/**/
-
 // property
 #define MMC_PROPERTY_NAME(name) name##_
 #define MMC_PROPERTY_DEF(type, name) \
