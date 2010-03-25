@@ -30,11 +30,10 @@ CommandBasePtr StorageCommand::parse(const std::string& name)
 	else if (name == constant::command::prepend) type = CommandType::prepend;
 	else if (name == constant::command::cas)     type = CommandType::cas;
 
-	StorageCommandPtr command;
 	if (type != CommandType::none)
-		command.reset(new StorageCommand(name, type));
-
-	return command;
+		return StorageCommandPtr(new StorageCommand(name, type));
+	else
+		return StorageCommandPtr();
 }
 
 bool StorageCommand::parse(const arguments_type& args)

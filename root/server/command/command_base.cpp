@@ -5,6 +5,7 @@
 #include "connection.hpp"
 #include "constant.hpp"
 #include <boost/tokenizer.hpp>
+#include <vector>
 
 namespace mmc {
 
@@ -23,6 +24,21 @@ CommandBasePtr CommandBase::parse(const std::string& command)
 	if (command.empty())
 		return cmd;
 
+#if 0
+	// それほど変わらない
+	std::vector<char> tmp(command.begin(), command.end());
+	tmp.push_back('\0');
+	char* p = strtok(&(*tmp.begin()), " ");
+	std::string name;
+	std::vector<std::string> args;
+	if (p) name.assign(p);
+	while (p != 0)
+	{
+		p = strtok(0, " ");
+		if (p) args.push_back(std::string(p));
+	}
+
+#else
 	typedef boost::char_separator<char> separator_t;
 	typedef boost::tokenizer<separator_t> tokenizer_t;
 	separator_t separator(" ");
@@ -45,6 +61,7 @@ CommandBasePtr CommandBase::parse(const std::string& command)
 			args.push_back(*it);
 		}
 	}
+#endif
 
 	// parse
 	if (!cmd) cmd = StorageCommand::parse(name);

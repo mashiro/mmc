@@ -20,11 +20,10 @@ CommandBasePtr RetrievalCommand::parse(const std::string& name)
 	if      (name == constant::command::get)  type = CommandType::get;
 	else if (name == constant::command::gets) type = CommandType::gets;
 
-	RetrievalCommandPtr command;
 	if (type != CommandType::none)
-		command.reset(new RetrievalCommand(name, type));
-
-	return command;
+		return RetrievalCommandPtr(new RetrievalCommand(name, type));
+	else
+		return RetrievalCommandPtr();
 }
 
 bool RetrievalCommand::parse(const arguments_type& args)

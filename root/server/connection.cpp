@@ -67,7 +67,6 @@ void Connection::handle_read_command(const boost::system::error_code& error, std
 	if (!error)
 	{
 		read_streambuf(bytes_transferred);
-
 		CommandBasePtr command = CommandBase::parse(buffer_);
 		if (command)
 		{

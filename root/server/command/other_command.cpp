@@ -19,11 +19,10 @@ CommandBasePtr OtherCommand::parse(const std::string& name)
 	if      (name == constant::command::version) type = CommandType::version;
 	else if (name == constant::command::quit)    type = CommandType::quit;
 
-	OtherCommandPtr command;
 	if (type != CommandType::none)
-		command.reset(new OtherCommand(name, type));
-
-	return command;
+		return OtherCommandPtr(new OtherCommand(name, type));
+	else
+		return OtherCommandPtr();
 }
 
 bool OtherCommand::parse(const arguments_type& args)
