@@ -13,8 +13,8 @@ OtherCommand::OtherCommand(const std::string& name, CommandType::type type)
 CommandBasePtr OtherCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
-	if      (name == constant::version) type = CommandType::version;
-	else if (name == constant::quit)    type = CommandType::quit;
+	if      (name == constant::command::version) type = CommandType::version;
+	else if (name == constant::command::quit)    type = CommandType::quit;
 
 	OtherCommandPtr command;
 	if (type != CommandType::none)
@@ -34,17 +34,12 @@ void OtherCommand::execute(ConnectionPtr connection)
 	switch (get_type())
 	{
 		case CommandType::version:
-			connection->set_buffer(constant::version + constant::space + mmc_version);
-			connection->async_write_result();
+			write_result(constant::result::version + constant::space + mmc_version);
+			connection->async_write_result(to_buffers());
 			break;
 
 		case CommandType::quit:
 			connection->shutdown();
-			break;
-
-		default:
-			connection->set_buffer(constant::server_error + constant::space + "unknown other command");
-			connection->async_write_result();
 			break;
 	}
 }

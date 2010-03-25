@@ -24,9 +24,15 @@ private:
 };
 
 template <typename Source>
-lexical_t<Source> lexical(const Source& source)
+inline lexical_t<Source> lexical(const Source& source)
 {
 	return lexical_t<Source>(source);
+}
+
+template <typename Source>
+inline std::string to_string(const Source& source)
+{
+	return lexical(source);
 }
 
 } // namespace mmc

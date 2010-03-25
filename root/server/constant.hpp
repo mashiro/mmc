@@ -5,11 +5,12 @@
 
 namespace mmc { namespace constant {
 
-	// global
-	const std::string crlf    = "\r\n";
-	const std::string space   = " ";
-	const std::string noreply = "noreply";
+// global
+const std::string crlf    = "\r\n";
+const std::string space   = " ";
+const std::string noreply = "noreply";
 
+namespace command {
 	// storage
 	const std::string set     = "set";
 	const std::string add     = "add";
@@ -25,8 +26,9 @@ namespace mmc { namespace constant {
 	// other
 	const std::string version = "version";
 	const std::string quit    = "quit";
+} 
 
-	// result
+namespace result {
 	const std::string error        = "ERROR";
 	const std::string client_error = "CLIENT_ERROR";
 	const std::string server_error = "SERVER_ERROR";
@@ -34,7 +36,10 @@ namespace mmc { namespace constant {
 	const std::string not_stored   = "NOT_STORED";
 	const std::string exists       = "EXISTS";
 	const std::string not_found    = "NOT_FOUND";
+	const std::string value        = "VALUE";
 	const std::string end          = "END";
+	const std::string version      = "VERSION";
+}
 
 }} // namespace mmc::constant
 

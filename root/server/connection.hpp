@@ -29,9 +29,6 @@ public:
 	void shutdown();
 
 	CacheBasePtr get_cache() const;
-
-	void set_buffer(const std::string& result);
-	void set_buffer(const std::string& result, const std::string& message);
 	const std::string& get_buffer() const;
 
 	std::size_t read_streambuf(std::size_t bytes_transferred);

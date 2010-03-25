@@ -4,6 +4,7 @@
 #include "lexical.hpp"
 #include "constant.hpp"
 #include <boost/bind.hpp>
+#include <boost/format.hpp>
 
 namespace mmc {
 
@@ -17,8 +18,8 @@ RetrievalCommand::~RetrievalCommand()
 CommandBasePtr RetrievalCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
-	if      (name == constant::get)  type = CommandType::get;
-	else if (name == constant::gets) type = CommandType::gets;
+	if      (name == constant::command::get)  type = CommandType::get;
+	else if (name == constant::command::gets) type = CommandType::gets;
 
 	RetrievalCommandPtr command;
 	if (type != CommandType::none)
@@ -39,33 +40,35 @@ void RetrievalCommand::execute(ConnectionPtr connection)
 	ResultCode::type result = ResultCode::none;
 	if (CacheBasePtr cache = connection->get_cache())
 	{
-		typedef keys_type::const_iterator iter_t;
-		iter_t it = get_keys().begin();
-		iter_t endit = get_keys().end();
-
-		while (it != endit)
+		for (std::size_t i = 0; i < get_keys().size(); ++i)
 		{
+			const argument_type& key = get_keys().at(i);
+
 			boost::optional<CacheRecord> record;
 			switch (get_type())
 			{
-				case CommandType::get: record = cache->get(*it); break;
-				case CommandType::gets: record = cache->gets(*it); break;
+				case CommandType::get: record = cache->get(key); break;
+				case CommandType::gets: record = cache->gets(key); break;
 			}
 
-			// ちゃんと boost::asio::buffer の配列にいれて渡す
 			if (record)
 			{
-				//connection->buffer() = record->get_data() + constant::crlf;
-			}
+				std::string header = key
+					+ constant::space + to_string(record->get_flags())
+					+ constant::space + to_string(record->get_data().size())
+					;
 
-			++it;
+				if (get_type() == CommandType::gets)
+					header += constant::space + to_string(record->get_cas());
+
+				write_result(constant::result::value, header);
+				write_result(record->get_data());
+			}
 		}
 	}
 
-	//connection->buffer() += constant::end;
-	//connection->buffer() += constant::crlf;
-
-	connection->async_write_result();
+	write_result(constant::result::end);
+	connection->async_write_result(to_buffers());
 }
 
 } // namespace mmc

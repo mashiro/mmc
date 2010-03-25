@@ -23,12 +23,12 @@ StorageCommand::~StorageCommand()
 CommandBasePtr StorageCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
-	if      (name == constant::set)     type = CommandType::set;
-	else if (name == constant::add)     type = CommandType::add;
-	else if (name == constant::replace) type = CommandType::replace;
-	else if (name == constant::append)  type = CommandType::append;
-	else if (name == constant::prepend) type = CommandType::prepend;
-	else if (name == constant::cas)     type = CommandType::cas;
+	if      (name == constant::command::set)     type = CommandType::set;
+	else if (name == constant::command::add)     type = CommandType::add;
+	else if (name == constant::command::replace) type = CommandType::replace;
+	else if (name == constant::command::append)  type = CommandType::append;
+	else if (name == constant::command::prepend) type = CommandType::prepend;
+	else if (name == constant::command::cas)     type = CommandType::cas;
 
 	StorageCommandPtr command;
 	if (type != CommandType::none)
@@ -88,8 +88,8 @@ void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost
 	std::size_t length = connection->read_streambuf(bytes_transferred);
 	if (length != get_bytes())
 	{
-		// 長さが違う
-		connection->set_buffer(constant::client_error, "bad data chunk");
+		// 長さが違うエラー
+		write_result(constant::result::client_error, "bad data chunk");
 	}
 	else
 	{
@@ -108,20 +108,17 @@ void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost
 				case CommandType::cas:     result = cache->cas(get_key(), get_flags(), get_exptime(), get_cas(), buffer); break;
 			}
 
-			if (result == ResultCode::none)
-				connection->set_buffer(constant::server_error, "unknown storage command");
-			else
-				connection->set_buffer(result_code_to_string(result));
+			write_result(result_code_to_string(result));
 		}
 		else
 		{
-			// キャッシュが存在しない
-			connection->set_buffer(constant::server_error, "cache missing");
+			// キャッシュが存在しないエラー
+			write_result(constant::result::server_error, "cache missing");
 		}
 	}
 
 	// 結果を書き込む
-	connection->async_write_result();
+	connection->async_write_result(to_buffers());
 }
 
 } // namespace mmc

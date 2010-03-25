@@ -3,11 +3,11 @@
 
 #include "config.hpp"
 #include "utility.hpp"
+#include <boost/asio.hpp>
+#include <boost/system/error_code.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/asio/buffer.hpp>
-#include <boost/system/error_code.hpp>
 #include <vector>
 
 namespace mmc {
@@ -29,7 +29,7 @@ public:
 	virtual bool parse(const arguments_type& args) = 0;
 	virtual void execute(ConnectionPtr connection) = 0;
 
-public:
+protected:
 	void write_result(const std::string& result);
 	void write_result(const std::string& result, const std::string& message);
 	std::vector<boost::asio::const_buffer> to_buffers() const;

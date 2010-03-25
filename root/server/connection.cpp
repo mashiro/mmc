@@ -46,18 +46,6 @@ CacheBasePtr Connection::get_cache() const
 	return cache_.lock();
 }
 
-void Connection::set_buffer(const std::string& result)
-{
-	buffer_ = result;
-	buffer_ += constant::crlf;
-}
-
-void Connection::set_buffer(const std::string& result, const std::string& message)
-{
-	buffer_ = result + constant::space + message;
-	buffer_ += constant::crlf;
-}
-
 const std::string& Connection::get_buffer() const
 {
 	return buffer_;
@@ -85,7 +73,7 @@ void Connection::handle_read_command(const boost::system::error_code& error, std
 		else
 		{
 			// error
-			buffer_ = constant::error;
+			buffer_ = constant::result::error;
 			buffer_ += constant::crlf;
 			async_write_result();
 		}
