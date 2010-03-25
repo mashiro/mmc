@@ -4,7 +4,6 @@
 #include "lexical.hpp"
 #include "constant.hpp"
 #include <boost/bind.hpp>
-#include <boost/format.hpp>
 
 namespace mmc {
 
