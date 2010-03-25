@@ -9,8 +9,3 @@ add_library(${NAME} STATIC
 	${MMC_COMMAND_SOURCES}
 	${MMC_CACHE_SOURCES}
 )
-
-if (NOT WIN32)
-	target_link_libraries(${NAME} boost_system-mt)
-	target_link_libraries(${NAME} boost_thread-mt)
-endif (NOT WIN32)
