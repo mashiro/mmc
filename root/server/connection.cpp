@@ -76,7 +76,7 @@ void Connection::handle_read_command(const boost::system::error_code& error, std
 		}
 		else
 		{
-			// error
+			// 知らないコマンド
 			buffer_ = constant::result::error;
 			buffer_ += constant::crlf;
 			async_write(boost::asio::buffer(buffer_), boost::bind(&Connection::handle_write_result, shared_this(),
