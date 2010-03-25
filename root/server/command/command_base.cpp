@@ -2,6 +2,7 @@
 #include "command/storage_command.hpp"
 #include "command/retrieval_command.hpp"
 #include "command/other_command.hpp"
+#include "constant.hpp"
 #include <boost/tokenizer.hpp>
 
 namespace mmc {
@@ -52,6 +53,30 @@ CommandBasePtr CommandBase::parse(const std::string& command)
 		return cmd;
 	else
 		return CommandBasePtr();
+}
+
+void CommandBase::write_result(const std::string& result)
+{
+	std::string s = result + constant::crlf;
+	MMC_PROPERTY_NAME(results).push_back(s);
+}
+
+void CommandBase::write_result(const std::string& result, const std::string& message)
+{
+	std::string s = result + constant::space + message + constant::crlf;
+	MMC_PROPERTY_NAME(results).push_back(s);
+}
+
+std::vector<boost::asio::const_buffer> CommandBase::to_buffers() const
+{
+	std::vector<boost::asio::const_buffer> buffers;
+	for (std::size_t i = 0; i < MMC_PROPERTY_NAME(results).size(); ++i)
+	{
+		const std::string& result = MMC_PROPERTY_NAME(results)[i];
+		buffers.push_back(boost::asio::buffer(result));
+	}
+
+	return buffers;
 }
 
 } // namespace mmc

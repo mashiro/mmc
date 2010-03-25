@@ -55,15 +55,15 @@ void RetrievalCommand::execute(ConnectionPtr connection)
 			// ちゃんと boost::asio::buffer の配列にいれて渡す
 			if (record)
 			{
-				connection->buffer() = record->get_data() + constant::crlf;
+				//connection->buffer() = record->get_data() + constant::crlf;
 			}
 
 			++it;
 		}
 	}
 
-	connection->buffer() += constant::end;
-	connection->buffer() += constant::crlf;
+	//connection->buffer() += constant::end;
+	//connection->buffer() += constant::crlf;
 
 	connection->async_write_result();
 }

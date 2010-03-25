@@ -23,21 +23,6 @@ const Connection::socket_type& Connection::socket() const
 	return socket_;
 }
 
-std::string& Connection::buffer()
-{
-	return buffer_;
-}
-
-const std::string& Connection::buffer() const
-{
-	return buffer_;
-}
-
-CacheBasePtr Connection::get_cache() const
-{
-	return cache_.lock();
-}
-
 void Connection::start()
 {
 	async_read(boost::bind(&Connection::handle_read_command, shared_from_this(),
@@ -56,12 +41,34 @@ void Connection::shutdown()
 	socket_.shutdown(socket_type::shutdown_both, ignored_ec);
 }
 
-std::string& Connection::read_streambuf(std::size_t bytes_transferred)
+CacheBasePtr Connection::get_cache() const
+{
+	return cache_.lock();
+}
+
+void Connection::set_buffer(const std::string& result)
+{
+	buffer_ = result;
+	buffer_ += constant::crlf;
+}
+
+void Connection::set_buffer(const std::string& result, const std::string& message)
+{
+	buffer_ = result + constant::space + message;
+	buffer_ += constant::crlf;
+}
+
+const std::string& Connection::get_buffer() const
+{
+	return buffer_;
+}
+
+std::size_t Connection::read_streambuf(std::size_t bytes_transferred)
 {
 	const char* data = boost::asio::buffer_cast<const char*>(streambuf_.data());
 	streambuf_.consume(bytes_transferred);
 	buffer_.assign(data, data + bytes_transferred - 2); // 終端の CRLF を除く
-	return buffer_;
+	return buffer_.size();
 }
 
 void Connection::handle_read_command(const boost::system::error_code& error, std::size_t bytes_transferred)

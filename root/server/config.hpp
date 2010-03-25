@@ -7,6 +7,8 @@
 
 namespace mmc {
 
+const std::string mmc_version = "0.1";
+
 typedef boost::uint32_t cache_flags_type;
 typedef boost::uint32_t cache_exptime_type;
 typedef boost::uint32_t cache_bytes_type;

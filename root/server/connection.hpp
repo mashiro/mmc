@@ -24,14 +24,17 @@ public:
 	socket_type& socket();
 	const socket_type& socket() const;
 
-	std::string& buffer();
-	const std::string& buffer() const;
-
-	CacheBasePtr get_cache() const;
-
 	void start();
 	void restart();
 	void shutdown();
+
+	CacheBasePtr get_cache() const;
+
+	void set_buffer(const std::string& result);
+	void set_buffer(const std::string& result, const std::string& message);
+	const std::string& get_buffer() const;
+
+	std::size_t read_streambuf(std::size_t bytes_transferred);
 
 	// 非同期で読み込む
 	template <typename ReadHandler>
@@ -45,9 +48,6 @@ public:
 	{
 		boost::asio::async_read_until(socket_, buffer, constant::crlf, strand_.wrap(handler));
 	}
-
-	// streambuf から buffer にデータを読み込む
-	std::string& read_streambuf(std::size_t bytes_transferred);
 
 	// 非同期で書き込む
 	template <typename ConstBufferSequence, typename WriteHandler>

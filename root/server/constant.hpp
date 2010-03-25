@@ -36,8 +36,6 @@ namespace mmc { namespace constant {
 	const std::string not_found    = "NOT_FOUND";
 	const std::string end          = "END";
 
-	// message
-
 }} // namespace mmc::constant
 
 #endif /* MMC_CONSTANT_HPP_INCLUDED */

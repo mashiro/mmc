@@ -6,6 +6,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/asio/buffer.hpp>
 #include <boost/system/error_code.hpp>
 #include <vector>
 
@@ -29,8 +30,14 @@ public:
 	virtual void execute(ConnectionPtr connection) = 0;
 
 public:
+	void write_result(const std::string& result);
+	void write_result(const std::string& result, const std::string& message);
+	std::vector<boost::asio::const_buffer> to_buffers() const;
+
+public:
 	MMC_PROPERTY_DEF(std::string, name)
 	MMC_PROPERTY_DEF(CommandType::type, type)
+	MMC_PROPERTY_DEF(arguments_type, results)
 };
 
 } // namespace mmc

@@ -85,13 +85,11 @@ void StorageCommand::execute(ConnectionPtr connection)
 void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	// datablock を読み込む
-	std::string& buffer = connection->read_streambuf(bytes_transferred);
-	if (buffer.size() != get_bytes())
+	std::size_t length = connection->read_streambuf(bytes_transferred);
+	if (length != get_bytes())
 	{
 		// 長さが違う
-		buffer = constant::client_error;
-		buffer += " bad data chunk";
-		buffer += constant::crlf;
+		connection->set_buffer(constant::client_error, "bad data chunk");
 	}
 	else
 	{
@@ -99,6 +97,7 @@ void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost
 		ResultCode::type result = ResultCode::none;
 		if (CacheBasePtr cache = connection->get_cache())
 		{
+			const std::string& buffer = connection->get_buffer();
 			switch (get_type())
 			{
 				case CommandType::set:     result = cache->set(get_key(), get_flags(), get_exptime(), buffer); break;
@@ -109,14 +108,15 @@ void StorageCommand::handle_datablock_read(ConnectionPtr connection, const boost
 				case CommandType::cas:     result = cache->cas(get_key(), get_flags(), get_exptime(), get_cas(), buffer); break;
 			}
 
-			buffer = result_code_to_string(result);
-			buffer += constant::crlf;
+			if (result == ResultCode::none)
+				connection->set_buffer(constant::server_error, "unknown storage command");
+			else
+				connection->set_buffer(result_code_to_string(result));
 		}
 		else
 		{
-			buffer = constant::server_error;
-			buffer += " cache missing";
-			buffer += constant::crlf;
+			// キャッシュが存在しない
+			connection->set_buffer(constant::server_error, "cache missing");
 		}
 	}
 

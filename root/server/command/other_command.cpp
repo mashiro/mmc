@@ -25,6 +25,7 @@ CommandBasePtr OtherCommand::parse(const std::string& name)
 
 bool OtherCommand::parse(const arguments_type& args)
 {
+	// 引数はとらない
 	return args.size() == 0;
 }
 
@@ -32,13 +33,17 @@ void OtherCommand::execute(ConnectionPtr connection)
 {
 	switch (get_type())
 	{
+		case CommandType::version:
+			connection->set_buffer(constant::version + constant::space + mmc_version);
+			connection->async_write_result();
+			break;
+
 		case CommandType::quit:
 			connection->shutdown();
 			break;
+
 		default:
-			// 適当
-			connection->buffer() = constant::error;
-			connection->buffer() += constant::crlf;
+			connection->set_buffer(constant::server_error + constant::space + "unknown other command");
 			connection->async_write_result();
 			break;
 	}
