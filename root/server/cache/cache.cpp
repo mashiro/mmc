@@ -69,7 +69,7 @@ ResultCode::type Cache::append(const std::string& key, cache_flags_type flags, c
 	}
 
 	value_type& record = it->second;
-	record.set_data(data);
+	record.set_data(record.get_data() + data);
 	record.set_flags(flags);
 	record.set_exptime(exptime);
 	record.set_cas(get_next_cas());
@@ -87,7 +87,7 @@ ResultCode::type Cache::prepend(const std::string& key, cache_flags_type flags, 
 	}
 
 	value_type& record = it->second;
-	record.set_data(data);
+	record.set_data(data + record.get_data());
 	record.set_flags(flags);
 	record.set_exptime(exptime);
 	record.set_cas(get_next_cas());
