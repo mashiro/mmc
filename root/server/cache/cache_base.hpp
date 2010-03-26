@@ -37,11 +37,15 @@ public:
 	virtual ResultCode::type cas(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, cache_cas_type cas, const std::string& data) = 0;
 
 	// retrieval
-	virtual boost::optional<CacheRecord> get(const std::string& key) const = 0;
-	virtual boost::optional<CacheRecord> gets(const std::string& key) const = 0;
+	virtual ResultCode::type get(const std::string& key, CacheRecord& result) const = 0;
+	virtual ResultCode::type gets(const std::string& key, CacheRecord& result) const = 0;
 
 	// deletion
 	virtual ResultCode::type delete_(const std::string& key, cache_exptime_type time) = 0;
+
+	// incr/decr
+	virtual ResultCode::type incr(const std::string& key, cache_decimal_type value, cache_decimal_type& result) = 0;
+	virtual ResultCode::type decr(const std::string& key, cache_decimal_type value, cache_decimal_type& result) = 0;
 };
 
 } // namespace mmc

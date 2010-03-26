@@ -40,25 +40,26 @@ void RetrievalCommand::execute()
 		{
 			const argument_type& key = get_keys().at(i);
 
-			boost::optional<CacheRecord> record;
+			ResultCode::type result = ResultCode::none;
+			CacheRecord record;
 			switch (get_type())
 			{
-				case CommandType::get: record = cache->get(key); break;
-				case CommandType::gets: record = cache->gets(key); break;
+				case CommandType::get: result = cache->get(key, record); break;
+				case CommandType::gets: result = cache->gets(key, record); break;
 			}
 
-			if (record)
+			if (result == ResultCode::ok)
 			{
 				std::string header = key
-					+ constant::space + to_string(record->get_flags())
-					+ constant::space + to_string(record->get_data().size())
+					+ constant::space + to_string(record.get_flags())
+					+ constant::space + to_string(record.get_data().size())
 					;
 
 				if (get_type() == CommandType::gets)
-					header += constant::space + to_string(record->get_cas());
+					header += constant::space + to_string(record.get_cas());
 
 				add_result(constant::result::value, header);
-				add_result(record->get_data());
+				add_result(record.get_data());
 			}
 		}
 	}

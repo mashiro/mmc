@@ -18,6 +18,7 @@ typedef boost::uint64_t cache_cas_type;
 
 MMC_ENUM_BEGIN(ResultCode)
 	none,
+	ok,
 	stored,
 	not_stored,
 	exists,
@@ -72,6 +73,7 @@ namespace result {
 	const std::string error        = "ERROR";
 	const std::string client_error = "CLIENT_ERROR";
 	const std::string server_error = "SERVER_ERROR";
+	const std::string ok           = "OK";
 	const std::string stored       = "STORED";
 	const std::string not_stored   = "NOT_STORED";
 	const std::string exists       = "EXISTS";

@@ -54,9 +54,17 @@ void IncrDecrCommand::execute()
 	if (CacheBasePtr cache = connection->get_cache())
 	{
 		ResultCode::type result = ResultCode::none;
-		//result = cache->delete_(get_key(), get_time());
+		cache_decimal_type value = 0;
+		switch (get_type())
+		{
+			case CommandType::incr: result = cache->incr(get_key(), get_value(), value);
+			case CommandType::decr: result = cache->decr(get_key(), get_value(), value);
+		}
 
-		add_result(result_code_to_string(result));
+		if (result == ResultCode::ok)
+			add_result(lexical(value));
+		else
+			add_result(result_code_to_string(result));
 	}
 	else
 	{

@@ -2,6 +2,7 @@
 #include "command/storage_command.hpp"
 #include "command/retrieval_command.hpp"
 #include "command/deletion_command.hpp"
+#include "command/incr_decr_command.hpp"
 #include "command/other_command.hpp"
 #include "connection.hpp"
 #include <boost/tokenizer.hpp>
@@ -67,6 +68,7 @@ CommandBasePtr CommandBase::parse(const std::string& command)
 	if (!cmd) cmd = StorageCommand::parse(name);
 	if (!cmd) cmd = RetrievalCommand::parse(name);
 	if (!cmd) cmd = DeletionCommand::parse(name);
+	if (!cmd) cmd = IncrDecrCommand::parse(name);
 	if (!cmd) cmd = OtherCommand::parse(name);
 	if (cmd && cmd->parse(args))
 		return cmd;

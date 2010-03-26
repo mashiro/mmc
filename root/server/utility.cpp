@@ -6,6 +6,7 @@ const std::string& result_code_to_string(ResultCode::type result)
 {
 	switch (result)
 	{
+		case ResultCode::ok    :     return constant::result::ok;
 		case ResultCode::stored:     return constant::result::stored;
 		case ResultCode::not_stored: return constant::result::not_stored;
 		case ResultCode::exists:     return constant::result::exists;

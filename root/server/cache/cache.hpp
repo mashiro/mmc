@@ -43,11 +43,15 @@ public:
 	virtual ResultCode::type cas(const std::string& key, cache_flags_type flags, cache_exptime_type exptime, cache_cas_type cas, const std::string& data);
 
 	// retrieval
-	virtual boost::optional<CacheRecord> get(const std::string& key) const;
-	virtual boost::optional<CacheRecord> gets(const std::string& key) const;
+	virtual ResultCode::type get(const std::string& key, CacheRecord& result) const;
+	virtual ResultCode::type gets(const std::string& key, CacheRecord& result) const;
 
 	// deletion
 	virtual ResultCode::type delete_(const std::string& key, cache_exptime_type time);
+
+	// incr/decr
+	virtual ResultCode::type incr(const std::string& key, cache_decimal_type value, cache_decimal_type& result);
+	virtual ResultCode::type decr(const std::string& key, cache_decimal_type value, cache_decimal_type& result);
 
 private:
 	cache_cas_type get_next_cas();
