@@ -57,8 +57,8 @@ void IncrDecrCommand::execute()
 		cache_decimal_type value = 0;
 		switch (get_type())
 		{
-			case CommandType::incr: result = cache->incr(get_key(), get_value(), value);
-			case CommandType::decr: result = cache->decr(get_key(), get_value(), value);
+			case CommandType::incr: result = cache->incr(get_key(), get_value(), value); break;
+			case CommandType::decr: result = cache->decr(get_key(), get_value(), value); break;
 		}
 
 		if (result == ResultCode::ok)
