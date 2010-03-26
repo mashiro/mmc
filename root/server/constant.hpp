@@ -7,6 +7,7 @@ namespace mmc { namespace constant {
 
 // global
 const std::string crlf    = "\r\n";
+const std::string empty   = "";
 const std::string space   = " ";
 const std::string noreply = "noreply";
 
@@ -23,6 +24,9 @@ namespace command {
 	const std::string get     = "get";
 	const std::string gets    = "gets";
 
+	// deletion
+	const std::string delete_ = "delete";
+
 	// other
 	const std::string version = "version";
 	const std::string quit    = "quit";
@@ -36,6 +40,7 @@ namespace result {
 	const std::string not_stored   = "NOT_STORED";
 	const std::string exists       = "EXISTS";
 	const std::string not_found    = "NOT_FOUND";
+	const std::string deleted      = "DELETED";
 	const std::string value        = "VALUE";
 	const std::string end          = "END";
 	const std::string version      = "VERSION";

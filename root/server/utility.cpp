@@ -1,17 +1,18 @@
 #include "utility.hpp"
+#include "constant.hpp"
 
 namespace mmc {
 
-const char* result_code_to_string(ResultCode::type result)
+const std::string& result_code_to_string(ResultCode::type result)
 {
 	switch (result)
 	{
-		case ResultCode::stored:     return "STORED";
-		case ResultCode::not_stored: return "NOT_STORED";
-		case ResultCode::exists:     return "EXISTS";
-		case ResultCode::not_found:  return "NOT_FOUND";
-		case ResultCode::deleted:    return "DELETED";
-		default: return 0;
+		case ResultCode::stored:     return constant::result::stored;
+		case ResultCode::not_stored: return constant::result::not_stored;
+		case ResultCode::exists:     return constant::result::exists;
+		case ResultCode::not_found:  return constant::result::not_found;
+		case ResultCode::deleted:    return constant::result::deleted;
+		default: return constant::empty;
 	}
 }
 

@@ -33,7 +33,7 @@
 
 namespace mmc {
 
-const char* result_code_to_string(ResultCode::type result);
+const std::string& result_code_to_string(ResultCode::type result);
 
 } // namespace mmc
 

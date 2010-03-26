@@ -46,6 +46,9 @@ public:
 	virtual boost::optional<CacheRecord> get(const std::string& key) const;
 	virtual boost::optional<CacheRecord> gets(const std::string& key) const;
 
+	// deletion
+	virtual ResultCode::type delete_(const std::string& key, cache_exptime_type time);
+
 private:
 	cache_cas_type get_next_cas();
 

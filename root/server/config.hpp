@@ -13,6 +13,7 @@ typedef boost::uint32_t cache_flags_type;
 typedef boost::uint32_t cache_exptime_type;
 typedef boost::uint32_t cache_bytes_type;
 typedef boost::uint64_t cache_cas_type;
+typedef boost::uint64_t mmc_decimal_type;
 
 MMC_ENUM_BEGIN(ResultCode)
 	none,
@@ -27,6 +28,7 @@ MMC_ENUM_BEGIN(CommandType)
 	none, 
 	set, add, replace, append, prepend, cas,
 	get, gets,
+	delete_,
 	version, quit,
 MMC_ENUM_END()
 

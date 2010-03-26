@@ -82,8 +82,10 @@ void StorageCommand::execute()
 
 void StorageCommand::handle_datablock_read(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
+	ConnectionPtr connection = get_connection();
+
 	// datablock を読み込む
-	std::size_t length = get_connection()->read_streambuf(bytes_transferred);
+	std::size_t length = connection->read_streambuf(bytes_transferred);
 	if (length != get_bytes())
 	{
 		// 長さが違うエラー
@@ -92,10 +94,11 @@ void StorageCommand::handle_datablock_read(const boost::system::error_code& erro
 	else
 	{
 		// 処理
-		ResultCode::type result = ResultCode::none;
-		if (CacheBasePtr cache = get_connection()->get_cache())
+		if (CacheBasePtr cache = connection->get_cache())
 		{
-			const std::string& buffer = get_connection()->get_buffer();
+			const std::string& buffer = connection->get_buffer();
+
+			ResultCode::type result = ResultCode::none;
 			switch (get_type())
 			{
 				case CommandType::set:     result = cache->set(get_key(), get_flags(), get_exptime(), buffer); break;
@@ -116,7 +119,10 @@ void StorageCommand::handle_datablock_read(const boost::system::error_code& erro
 	}
 
 	// 結果を書き込む
-	async_write_result();
+	if (get_noreply())
+		connection->restart();
+	else
+		async_write_result();
 }
 
 } // namespace mmc

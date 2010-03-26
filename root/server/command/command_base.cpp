@@ -1,6 +1,7 @@
 #include "command/command_base.hpp"
 #include "command/storage_command.hpp"
 #include "command/retrieval_command.hpp"
+#include "command/deletion_command.hpp"
 #include "command/other_command.hpp"
 #include "connection.hpp"
 #include "constant.hpp"
@@ -66,6 +67,7 @@ CommandBasePtr CommandBase::parse(const std::string& command)
 	// parse
 	if (!cmd) cmd = StorageCommand::parse(name);
 	if (!cmd) cmd = RetrievalCommand::parse(name);
+	if (!cmd) cmd = DeletionCommand::parse(name);
 	if (!cmd) cmd = OtherCommand::parse(name);
 	if (cmd && cmd->parse(args))
 		return cmd;

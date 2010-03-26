@@ -131,4 +131,17 @@ boost::optional<CacheRecord> Cache::gets(const std::string& key) const
 	return get(key);
 }
 
+ResultCode::type Cache::delete_(const std::string& key, cache_exptime_type time)
+{
+	unique_lock_type ulock(mutex_);
+	iterator it = map_.find(key);
+	if (it == map_.end())
+	{
+		return ResultCode::not_found;
+	}
+
+	map_.erase(it);
+	return ResultCode::deleted;
+}
+
 } // namespace mmc

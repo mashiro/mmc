@@ -39,6 +39,9 @@ public:
 	// retrieval
 	virtual boost::optional<CacheRecord> get(const std::string& key) const = 0;
 	virtual boost::optional<CacheRecord> gets(const std::string& key) const = 0;
+
+	// deletion
+	virtual ResultCode::type delete_(const std::string& key, cache_exptime_type time) = 0;
 };
 
 } // namespace mmc
