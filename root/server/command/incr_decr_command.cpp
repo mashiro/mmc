@@ -1,52 +1,42 @@
-#include "command/deletion_command.hpp"
+#include "command/incr_decr_command.hpp"
 #include "cache/cache_base.hpp"
 #include "connection.hpp"
 #include "lexical.hpp"
-#include "constant.hpp"
 
 namespace mmc {
 
-DeletionCommand::DeletionCommand(const std::string& name, CommandType::type type) 
+IncrDecrCommand::IncrDecrCommand(const std::string& name, CommandType::type type) 
 	: CommandBase(name, type)
 	, MMC_PROPERTY_NAME(key)()
-	, MMC_PROPERTY_NAME(time)(0)
+	, MMC_PROPERTY_NAME(value)(0)
 	, MMC_PROPERTY_NAME(noreply)(false)
 {}
 
-DeletionCommand::~DeletionCommand()
+IncrDecrCommand::~IncrDecrCommand()
 {}
 
-CommandBasePtr DeletionCommand::parse(const std::string& name)
+CommandBasePtr IncrDecrCommand::parse(const std::string& name)
 {
 	CommandType::type type = CommandType::none;
-	if (name == constant::command::delete_) type = CommandType::delete_;
+	if      (name == constant::command::incr) type = CommandType::incr;
+	else if (name == constant::command::decr) type = CommandType::decr;
 
 	if (type != CommandType::none)
-		return DeletionCommandPtr(new DeletionCommand(name, type));
+		return IncrDecrCommandPtr(new IncrDecrCommand(name, type));
 	else
-		return DeletionCommandPtr();
+		return IncrDecrCommandPtr();
 }
 
-bool DeletionCommand::parse(const arguments_type& args)
+bool IncrDecrCommand::parse(const arguments_type& args)
 {
 	try
 	{
-		if (args.size() < 1)
+		if (args.size() < 2)
 			return false;
 
 		set_key(lexical(args[0]));
-		if (args.size() > 1)
-		{
-			if (args.size() > 2)
-			{
-				set_time(lexical(args[1]));
-				set_noreply(args.size() > 2 && args[2] == constant::noreply);
-			}
-			else
-			{
-				set_noreply(args.size() > 1 && args[1] == constant::noreply);
-			}
-		}
+		set_value(lexical(args[1]));
+		set_noreply(args.size() > 2 && args[2] == constant::noreply);
 	}
 	catch (std::bad_cast&)
 	{
@@ -56,7 +46,7 @@ bool DeletionCommand::parse(const arguments_type& args)
 	return true;
 }
 
-void DeletionCommand::execute()
+void IncrDecrCommand::execute()
 {
 	ConnectionPtr connection = get_connection();
 
@@ -64,7 +54,7 @@ void DeletionCommand::execute()
 	if (CacheBasePtr cache = connection->get_cache())
 	{
 		ResultCode::type result = ResultCode::none;
-		result = cache->delete_(get_key(), get_time());
+		//result = cache->delete_(get_key(), get_time());
 
 		add_result(result_code_to_string(result));
 	}

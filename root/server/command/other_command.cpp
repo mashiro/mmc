@@ -1,7 +1,6 @@
 #include "command/other_command.hpp"
 #include "connection.hpp"
 #include "lexical.hpp"
-#include "constant.hpp"
 #include <boost/bind.hpp>
 
 namespace mmc {

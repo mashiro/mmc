@@ -22,7 +22,7 @@ public:
 
 public:
 	MMC_PROPERTY_DEF(std::string, key)
-	MMC_PROPERTY_DEF(cache_exptime_type, time)
+	MMC_PROPERTY_DEF(cache_decimal_type, value)
 	MMC_PROPERTY_DEF(bool, noreply)
 };
 

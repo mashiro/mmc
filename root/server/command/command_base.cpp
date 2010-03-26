@@ -4,7 +4,6 @@
 #include "command/deletion_command.hpp"
 #include "command/other_command.hpp"
 #include "connection.hpp"
-#include "constant.hpp"
 #include <boost/tokenizer.hpp>
 #include <vector>
 

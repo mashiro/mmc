@@ -1,5 +1,4 @@
 #include "utility.hpp"
-#include "constant.hpp"
 
 namespace mmc {
 

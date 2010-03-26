@@ -3,7 +3,6 @@
 
 #include "asio_base.hpp"
 #include "shared_object.hpp"
-#include "constant.hpp"
 #include "utility.hpp"
 #include <boost/noncopyable.hpp>
 #include <boost/bind.hpp>
