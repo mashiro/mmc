@@ -18,7 +18,11 @@ public:
 	typedef std::string key_type;
 	typedef CacheRecord value_type;
 	typedef std::pair<const key_type, value_type> mapped_type;
+#ifdef MMC_USE_CACHE_POOL_ALLOCATOR
+	typedef boost::pool_allocator<mapped_type> allocator_type;
+#else
 	typedef std::allocator<mapped_type> allocator_type;
+#endif
 	typedef boost::unordered_map<
 		key_type, value_type, boost::hash<key_type>, std::equal_to<key_type>, allocator_type
 	> map_type;
