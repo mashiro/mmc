@@ -61,10 +61,20 @@ void IncrDecrCommand::execute()
 			case CommandType::decr: result = cache->decr(get_key(), get_value(), value); break;
 		}
 
-		if (result == ResultCode::ok)
-			add_result(lexical(value));
-		else
-			add_result(result_code_to_string(result));
+		switch (result)
+		{
+			case ResultCode::ok:
+				add_result(lexical(value));
+				break;
+
+			case ResultCode::error:
+				add_result(constant::result::client_error, "cannot increment or decrement non-numeric value");
+				break;
+
+			default:
+				add_result(result_code_to_string(result));
+				break;
+		}
 	}
 	else
 	{

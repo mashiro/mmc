@@ -158,7 +158,7 @@ ResultCode::type Cache::incr(const std::string& key, cache_decimal_type value, c
 	}
 	catch (std::bad_cast&)
 	{
-		num = value;
+		return ResultCode::error;
 	}
 
 	record.set_data(lexical(num));
@@ -189,7 +189,7 @@ ResultCode::type Cache::decr(const std::string& key, cache_decimal_type value, c
 	}
 	catch (std::bad_cast&)
 	{
-		num = 0;
+		return ResultCode::error;
 	}
 
 	record.set_data(lexical(num));

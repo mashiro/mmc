@@ -19,6 +19,7 @@ typedef boost::uint64_t cache_cas_type;
 MMC_ENUM_BEGIN(ResultCode)
 	none,
 	ok,
+	error,
 	stored,
 	not_stored,
 	exists,
