@@ -26,14 +26,15 @@ int main(int argc, char* argv[])
 		if (vm.count("help"))
 		{
 			std::cout << desc << std::endl;
-			return 1;
+			return 0;
 		}
 
+		// get options
 		std::string address = vm["address"].as<std::string>();
 		std::string port = boost::lexical_cast<std::string>(vm["port"].as<boost::uint16_t>());
 		boost::uint32_t threads = vm["threads"].as<boost::uint32_t>();
 
-		// show variables
+		// show options
 		std::cout << "address: " << address << std::endl;
 		std::cout << "port: " << port << std::endl;
 		std::cout << "threads: " << threads << std::endl;
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
 	catch (std::exception& e)
 	{
 		std::cerr << "exception: " << e.what() << std::endl;
+		return 1;
 	}
 
 	return 0;
