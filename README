@@ -1,2 +1,14 @@
-Boostをがっつり使って実装したKVS
+-概要
+Boostをがっつり使って実装したマルチプラットフォームなKVS
 LRUが未実装なので爆発するまでメモリに溜め込みます
+
+-要求環境
+cmake
+boost
+
+-ビルド方法
+cd mmc
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
