@@ -1,4 +1,5 @@
 #include "connection.hpp"
+#include "command/command_parser.hpp"
 #include "command/command_base.hpp"
 #include "cache/cache_base.hpp"
 #include <boost/bind.hpp>
@@ -67,7 +68,7 @@ void Connection::handle_read_command(const boost::system::error_code& error, std
 	if (!error)
 	{
 		read_streambuf(bytes_transferred);
-		CommandBasePtr command = CommandBase::parse(buffer_);
+		CommandBasePtr command = CommandParser::parse(buffer_);
 		if (command)
 		{
 			command->set_connection(shared_this());

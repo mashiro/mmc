@@ -14,4 +14,4 @@ if(Boost_FOUND)
 	link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
-add_subdirectory(root)
+add_subdirectory(src)
